@@ -47,11 +47,11 @@ import warnings
 warnings.filterwarnings("ignore")
 
 # ── Load data with Polars ──
-literacy_df = pl.read_csv("unicef_indicator_1.csv", ignore_errors=True)
-water_df    = pl.read_csv("unicef_indicator_2.csv", ignore_errors=True)
-metadata_df = pl.read_csv("unicef_metadata.csv", ignore_errors=True)
+literacy_df = pl.read_csv("unicef_indicator_1.csv")
+water_df    = pl.read_csv("unicef_indicator_2.csv")
+metadata_df = pl.read_csv("unicef_metadata.csv")
 
-print(f"✅ Loaded: literacy={literacy_df.shape[0]}, water={water_df.shape[0]}, metadata={metadata_df.shape[0]} rows")
+print(f"Loaded: literacy={literacy_df.shape[0]}, water={water_df.shape[0]}, metadata={metadata_df.shape[0]} rows")
 ```
 
 ## Data Cleaning & Preparation {#sec-cleaning}
@@ -62,7 +62,7 @@ print(f"✅ Loaded: literacy={literacy_df.shape[0]}, water={water_df.shape[0]}, 
 #| warning: false
 #| message: false
 #| code-fold: true
-#| code-summary: "🧹 Polars Data Pre-Processing"
+#| code-summary: "Polars Data Pre-Processing"
 
 # Standardise column names to lowercase with underscores
 for name in ["literacy_df", "water_df", "metadata_df"]:
@@ -194,7 +194,7 @@ display(HTML(html_content))
 
 ::: {style="background-color: #F0F9FF; padding: 25px; border-radius: 15px; margin-bottom: 35px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);"}
 
-## 🌍 Visualisation 1 — World Map: Youth Literacy by Country {#sec-map}
+## Visualisation 1 — World Map: Youth Literacy by Country {#sec-map}
 
 At a global scale, the disparity in fundamental educational access becomes immediately visible. Through this choropleth map, we observe a sharp geographic divide. While the Global North, South America, and much of Asia exhibit profound literacy saturation (displayed in rich greens), substantial portions of Sub-Saharan Africa and isolated regions in South Asia remain critically underserved, shown in stark reds. It becomes evident that geographic location, persistent geopolitical instability, and resource scarcity continue to heavily dictate a child's right to foundational education.
 
@@ -207,7 +207,7 @@ At a global scale, the disparity in fundamental educational access becomes immed
 #| warning: false
 #| message: false
 #| code-fold: true
-#| code-summary: "🗺️ Generate World Map Visualization"
+#| code-summary: "Generate World Map Visualization"
 
 import geopandas as gpd
 import math
@@ -236,7 +236,7 @@ p1
 #| warning: false
 #| message: false
 #| code-fold: true
-#| code-summary: "📝 Compute Regional Map Details"
+#| code-summary: "Compute Regional Map Details"
 #| results: asis
 
 from IPython.display import Markdown, display
@@ -245,7 +245,7 @@ from IPython.display import Markdown, display
 top5_map = t_latest.sort("obs_value", descending=True).head(5)
 bottom5_map = t_latest.sort("obs_value").head(5)
 
-md = "### 🏆 Highest Literacy (Top 5)\n\n"
+md = "### Highest Literacy (Top 5)\n\n"
 md += "| Country | Record Year | Youth Literacy Rate (%) |\n"
 md += "|:---|:---:|---:|\n"
 for r in top5_map.iter_rows(named=True):
@@ -253,7 +253,7 @@ for r in top5_map.iter_rows(named=True):
 
 md += "\n<br>\n\n"
 
-md += "### 🚨 Critical Literacy Deficit (Bottom 5)\n\n"
+md += "### Critical Literacy Deficit (Bottom 5)\n\n"
 md += "| Country | Record Year | Youth Literacy Rate (%) |\n"
 md += "|:---|:---:|---:|\n"
 for r in bottom5_map.iter_rows(named=True):
@@ -267,7 +267,7 @@ display(Markdown(md))
 
 ::: {style="background-color: #FFF1F2; padding: 25px; border-radius: 15px; margin-bottom: 35px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);"}
 
-## 📊 Visualisation 2 — Bar Chart: Bottom 10 Literacy Nations {#sec-bar}
+## Visualisation 2 — Bar Chart: Bottom 10 Literacy Nations {#sec-bar}
 
 While global averages routinely champion worldwide advancement, drilling down into the bottom 10 nations exposes profound ongoing regional crises. Predominantly located across West and Central Africa—as well as Afghanistan—these severely struggling nations face immense structural barriers. With youth literacy rates plummeting below 40% in the most severe cases, the data signifies systemic failures often exacerbated by ongoing conflict, deep-rooted poverty, or an acute lack of enduring educational infrastructure. Achieving global educational parity means first confronting the urgent humanitarian crisis happening within these specific borders.
 
@@ -280,7 +280,7 @@ While global averages routinely champion worldwide advancement, drilling down in
 #| warning: false
 #| message: false
 #| code-fold: true
-#| code-summary: "📊 Generate Regional Bar Visualization"
+#| code-summary: "Generate Regional Bar Visualization"
 
 bottom10 = t_latest.sort("obs_value").head(10).with_columns(pl.col(country_col).cast(pl.Categorical).alias("country_cat"))
 p2 = (
