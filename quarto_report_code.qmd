@@ -1,8 +1,8 @@
 ---
 title: "UNICEF Youth Literacy & Water Access Dashboard"
-subtitle: "Built with Polars & plotnine — No Pandas Required"
-author: "Generated from InsightWeaver Dashboard"
-date: today
+subtitle: "BAA 1030 Data Analytics and Story Telling Assignment #2"
+author: "Vibhu, MSBM, DCU Student ID:A00053244"
+date: 12 April 2026
 toc: true
 toc-depth: 3
 number-sections: true
@@ -37,19 +37,17 @@ using **Polars** instead of Pandas.
 #| warning: false
 #| message: false
 #| code-fold: true
-#| code-summary: "⚙️ Core Library Setup & Ingestion"
+#| code-summary: "Core Library Setup & Raw files uploaded to Google Colab"
 
 import polars as pl
 import numpy as np
 import matplotlib.pyplot as plt
 from plotnine import *
-import warnings
-warnings.filterwarnings("ignore")
 
 # ── Load data with Polars ──
-literacy_df = pl.read_csv("unicef_indicator_1.csv", ignore_errors=True)
-water_df    = pl.read_csv("unicef_indicator_2.csv", ignore_errors=True)
-metadata_df = pl.read_csv("unicef_metadata.csv", ignore_errors=True)
+literacy_df = pl.read_csv("unicef_indicator_1.csv")
+water_df    = pl.read_csv("unicef_indicator_2.csv")
+metadata_df = pl.read_csv("unicef_metadata.csv")
 
 print(f"✅ Loaded: literacy={literacy_df.shape[0]}, water={water_df.shape[0]}, metadata={metadata_df.shape[0]} rows")
 ```
@@ -62,7 +60,7 @@ print(f"✅ Loaded: literacy={literacy_df.shape[0]}, water={water_df.shape[0]}, 
 #| warning: false
 #| message: false
 #| code-fold: true
-#| code-summary: "🧹 Polars Data Pre-Processing"
+#| code-summary: "Polars Data Pre-Processing"
 
 # Standardise column names to lowercase with underscores
 for name in ["literacy_df", "water_df", "metadata_df"]:
@@ -121,7 +119,7 @@ These findings unearth stark vulnerabilities: countries struggling with low basi
 #| warning: false
 #| message: false
 #| code-fold: true
-#| code-summary: "📈 HTML Executive Widget Computation"
+#| code-summary: "Executive Widget Computation for display"
 
 total_countries = t_latest.shape[0]
 avg_lit = t_latest.select(pl.col("obs_value").mean()).item()
@@ -297,7 +295,7 @@ p2
 #| warning: false
 #| message: false
 #| code-fold: true
-#| code-summary: "💬 Extract Narrative Callout Elements"
+#| code-summary: "Get the information to write the story and explain the visualization"
 #| results: asis
 
 from IPython.display import Markdown, display
