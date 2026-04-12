@@ -43,11 +43,13 @@ import polars as pl
 import numpy as np
 import matplotlib.pyplot as plt
 from plotnine import *
+import warnings
+warnings.filterwarnings("ignore")
 
 # ── Load data with Polars ──
-literacy_df = pl.read_csv("unicef_indicator_1.csv")
-water_df    = pl.read_csv("unicef_indicator_2.csv")
-metadata_df = pl.read_csv("unicef_metadata.csv")
+literacy_df = pl.read_csv("unicef_indicator_1.csv", ignore_errors=True)
+water_df    = pl.read_csv("unicef_indicator_2.csv", ignore_errors=True)
+metadata_df = pl.read_csv("unicef_metadata.csv", ignore_errors=True)
 
 print(f"✅ Loaded: literacy={literacy_df.shape[0]}, water={water_df.shape[0]}, metadata={metadata_df.shape[0]} rows")
 ```
@@ -60,7 +62,7 @@ print(f"✅ Loaded: literacy={literacy_df.shape[0]}, water={water_df.shape[0]}, 
 #| warning: false
 #| message: false
 #| code-fold: true
-#| code-summary: "Polars Data Pre-Processing"
+#| code-summary: "🧹 Polars Data Pre-Processing"
 
 # Standardise column names to lowercase with underscores
 for name in ["literacy_df", "water_df", "metadata_df"]:
@@ -190,6 +192,8 @@ html_content = f"""
 display(HTML(html_content))
 ```
 
+::: {style="background-color: #F0F9FF; padding: 25px; border-radius: 15px; margin-bottom: 35px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);"}
+
 ## 🌍 Visualisation 1 — World Map: Youth Literacy by Country {#sec-map}
 
 At a global scale, the disparity in fundamental educational access becomes immediately visible. Through this choropleth map, we observe a sharp geographic divide. While the Global North, South America, and much of Asia exhibit profound literacy saturation (displayed in rich greens), substantial portions of Sub-Saharan Africa and isolated regions in South Asia remain critically underserved, shown in stark reds. It becomes evident that geographic location, persistent geopolitical instability, and resource scarcity continue to heavily dictate a child's right to foundational education.
@@ -258,6 +262,11 @@ for r in bottom5_map.iter_rows(named=True):
 display(Markdown(md))
 ```
 
+:::
+
+
+::: {style="background-color: #FFF1F2; padding: 25px; border-radius: 15px; margin-bottom: 35px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);"}
+
 ## 📊 Visualisation 2 — Bar Chart: Bottom 10 Literacy Nations {#sec-bar}
 
 While global averages routinely champion worldwide advancement, drilling down into the bottom 10 nations exposes profound ongoing regional crises. Predominantly located across West and Central Africa—as well as Afghanistan—these severely struggling nations face immense structural barriers. With youth literacy rates plummeting below 40% in the most severe cases, the data signifies systemic failures often exacerbated by ongoing conflict, deep-rooted poverty, or an acute lack of enduring educational infrastructure. Achieving global educational parity means first confronting the urgent humanitarian crisis happening within these specific borders.
@@ -306,7 +315,7 @@ bottom5 = t_latest.sort("obs_value").head(5)
 md = ""
 
 md += "::: {.callout-tip}\n"
-md += "## 📖 The Good Story\n"
+md += "## The Good Story\n"
 md += "These five nations represent the absolute peak of educational access recorded in the UNICEF database, achieving literally perfect recorded youth literacy. They stand as statistical testaments to robust educational systems, highly structured socio-economic public policies, and unwavering government investments into early childhood infrastructures.\n\n"
 md += "| Country | Record Year | Literacy Rate (%) |\n"
 md += "|:---|:---:|---:|\n"
@@ -315,7 +324,7 @@ for r in top5.iter_rows(named=True):
 md += ":::\n\n"
 
 md += "::: {.callout-important}\n"
-md += "## 📉 The Bad Story\n"
+md += "## The Bad Story\n"
 md += "Conversely, these five extreme outliers sit at the painful epicenter of the global educational crisis. Ravaged heavily by deep-set multidimensional poverty, geographic isolation, and severe regional instability, the vast majority of their youth systematically lack access to foundational learning. Their ongoing humanitarian struggle physically darkens the overarching global map.\n\n"
 md += "| Country | Record Year | Literacy Rate (%) |\n"
 md += "|:---|:---:|---:|\n"
@@ -326,7 +335,12 @@ md += ":::\n"
 display(Markdown(md))
 ```
 
-## 📈 Visualisation 3 — Scatter Plot: Literacy vs GDP with Regression {#sec-scatter}
+:::
+
+
+::: {style="background-color: #F0FDF4; padding: 25px; border-radius: 15px; margin-bottom: 35px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);"}
+
+## Visualisation 3 — Scatter Plot: Literacy vs GDP with Regression {#sec-scatter}
 
 Does national wealth guarantee a literate youth? By plotting literacy rates against GDP per capita on a logarithmic scale, an undeniable, positive correlation emerges. The Ordinary Least Squares (OLS) regression highlights a steep initial climb: as economies transition upward from extreme poverty toward developing status (under $10k GDP per capita), literacy rates surge dramatically. However, the curve eventually plateaus near 100%—demonstrating that while basal economic funding is absolutely essential for establishing schools and stability, achieving final total literacy requires targeted socio-cultural policy rather than just infinite gross national wealth.
 
@@ -339,7 +353,7 @@ Does national wealth guarantee a literate youth? By plotting literacy rates agai
 #| warning: false
 #| message: false
 #| code-fold: true
-#| code-summary: "📉 Generate GDP Scatterplot & Regression"
+#| code-summary: "Generate GDP Scatterplot & Regression"
 
 meta_clean = (
     metadata_df
@@ -382,7 +396,7 @@ To ground this overarching trend observation, let us examine the raw data defini
 #| warning: false
 #| message: false
 #| code-fold: true
-#| code-summary: "💎 Evaluate Wealth Bracket Extraction"
+#| code-summary: "Evaluate Wealth Bracket Extraction"
 #| results: asis
 
 from IPython.display import Markdown, display
@@ -390,7 +404,7 @@ from IPython.display import Markdown, display
 # Extract the Top 15 by descending GDP natively in Polars
 top15 = scatter_df.sort(m_gdp, descending=True).head(15)
 
-md = "### 🏛️ The Wealth Bracket (Top 15 Economies)\n\n"
+md = "### The Wealth Bracket (Top 15 Economies)\n\n"
 md += "| Country | Record Year | GDP per Capita (USD) | Youth Literacy Rate (%) |\n"
 md += "|:---|:---:|---:|---:|\n"
 for r in top15.iter_rows(named=True):
@@ -399,7 +413,12 @@ for r in top15.iter_rows(named=True):
 display(Markdown(md))
 ```
 
-## 📉 Visualisation 4 — Time-Series: Global Water Access Trend {#sec-timeseries}
+:::
+
+
+::: {style="background-color: #FFFBEB; padding: 25px; border-radius: 15px; margin-bottom: 35px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);"}
+
+## Visualisation 4 — Time-Series: Global Water Access Trend {#sec-timeseries}
 
 Educational infrastructure cannot exist in a vacuum; human survivability metrics form the bedrock of community stability. This time-series explores the global progression of minimum basic water security over the last two decades. The smoothed LOESS trendline showcases a persistent, encouraging upward trajectory, reflecting the massive success of global humanitarian programs to build wells and sanitisation systems. Yet, the remaining percentage gap preventing 100% saturation represents populations explicitly anchored in survival mode—where millions of youths, particularly young girls, are often tasked with extensive daily basic resource gathering rather than attending their local schools.
 
@@ -412,7 +431,7 @@ Educational infrastructure cannot exist in a vacuum; human survivability metrics
 #| warning: false
 #| message: false
 #| code-fold: true
-#| code-summary: "🌊 Generate Time-Series Visualization"
+#| code-summary: "Generate Time-Series Visualization"
 
 water_ts = water_df.with_columns(pl.col(w_year_col).cast(pl.Int64, strict=False).alias("year")).drop_nulls(subset=["year", "obs_value"]).group_by("year").agg(pl.col("obs_value").mean().alias("avg_water")).sort("year")
 
@@ -437,7 +456,7 @@ p4
 #| warning: false
 #| message: false
 #| code-fold: true
-#| code-summary: "🚰 Compute Time-Series Table Extraction"
+#| code-summary: "Compute Time-Series Table Extraction"
 #| results: asis
 
 from IPython.display import Markdown, display
@@ -446,7 +465,7 @@ w_latest = water_df.sort(w_year_col).group_by(alpha_col).last().drop_nulls(subse
 top5_w = w_latest.sort("obs_value", descending=True).head(5)
 bottom5_w = w_latest.sort("obs_value").head(5)
 
-md = "### 🚰 Universal Water Access (Top 5)\n\n"
+md = "### Universal Water Access (Top 5)\n\n"
 md += "| Country | Record Year | Basic Water Access (%) |\n"
 md += "|:---|:---:|---:|\n"
 for r in top5_w.iter_rows(named=True):
@@ -455,7 +474,7 @@ for r in top5_w.iter_rows(named=True):
 
 md += "\n<br>\n\n"
 
-md += "### 🏜️ Critical Water Insecurity (Bottom 5)\n\n"
+md += "### Critical Water Insecurity (Bottom 5)\n\n"
 md += "| Country | Record Year | Basic Water Access (%) |\n"
 md += "|:---|:---:|---:|\n"
 for r in bottom5_w.iter_rows(named=True):
@@ -465,6 +484,8 @@ for r in bottom5_w.iter_rows(named=True):
 display(Markdown(md))
 ```
 
+:::
+
 ## References
 1. UNICEF Data Warehouse — <https://data.unicef.org>
 2. WHO/UNICEF Joint Monitoring Programme — <https://washdata.org>
@@ -472,5 +493,3 @@ display(Markdown(md))
 4. Quarto Documentation — <https://quarto.org>
 5. Polars Documentation — <https://docs.pola.rs>
 6. plotnine Documentation — <https://plotnine.org>
-
-### Thank You Prof. Dupre
