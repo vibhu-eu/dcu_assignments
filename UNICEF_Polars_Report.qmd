@@ -472,5 +472,3 @@ display(Markdown(md))
 4. Quarto Documentation — <https://quarto.org>
 5. Polars Documentation — <https://docs.pola.rs>
 6. plotnine Documentation — <https://plotnine.org>
-
-### Thank You Prof. Dupre
