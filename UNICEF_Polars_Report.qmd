@@ -22,7 +22,7 @@ execute:
 #| label: setup-assembly
 #| include: false
 from IPython.display import Markdown, Image, display
-# Phase 2 Assembly Helper
+# Phase 2 Assembly
 ```
 
 # 1. Executive Summary
@@ -44,7 +44,7 @@ These findings unearth stark vulnerabilities: countries struggling with low basi
 #| code-summary: "Executive Widget Computation for display"
 #| output: asis
 #| eval: true
-# Render Phase 1 Static Data Dashboard (Generated natively in Google Colab)
+# Render Phase 1 Static Data Dashboard
 data_block1 = r"""
 
 ::: {.panel-tabset}
