@@ -1,0 +1,274 @@
+country,alpha_2_code,alpha_3_code,numeric_code,indicator,time_period,obs_value,sex,unit_multiplier,unit_of_measure,observation_status,observation_confidentaility,time_period_activity_related_to_when_the_data_are_collected,current_age
+Afghanistan,AF,AFG,4,Youth literacy rate for 15-24 years,2021,41.59372,Female,,%,,,,Total
+Afghanistan,AF,AFG,4,Youth literacy rate for 15-24 years,2021,71.24394,Male,,%,,,,Total
+Afghanistan,AF,AFG,4,Youth literacy rate for 15-24 years,2021,55.9294,Total,,%,,,,Total
+Albania,AL,ALB,8,Youth literacy rate for 15-24 years,2018,99.63,Female,,%,,,,Total
+Albania,AL,ALB,8,Youth literacy rate for 15-24 years,2018,99.05,Male,,%,,,,Total
+Albania,AL,ALB,8,Youth literacy rate for 15-24 years,2018,99.33,Total,,%,,,,Total
+Algeria,DZ,DZA,12,Youth literacy rate for 15-24 years,2018,97.25216,Female,,%,,,,Total
+Algeria,DZ,DZA,12,Youth literacy rate for 15-24 years,2018,97.59406,Male,,%,,,,Total
+Algeria,DZ,DZA,12,Youth literacy rate for 15-24 years,2018,97.42652,Total,,%,,,,Total
+Argentina,AR,ARG,32,Youth literacy rate for 15-24 years,2018,99.75765,Female,,%,,,,Total
+Argentina,AR,ARG,32,Youth literacy rate for 15-24 years,2018,99.24183,Male,,%,,,,Total
+Argentina,AR,ARG,32,Youth literacy rate for 15-24 years,2018,99.50552,Total,,%,,,,Total
+Armenia,AM,ARM,51,Youth literacy rate for 15-24 years,2020,99.89736,Female,,%,,,,Total
+Armenia,AM,ARM,51,Youth literacy rate for 15-24 years,2020,99.85206,Male,,%,,,,Total
+Armenia,AM,ARM,51,Youth literacy rate for 15-24 years,2020,99.87382,Total,,%,,,,Total
+Azerbaijan,AZ,AZE,31,Youth literacy rate for 15-24 years,2019,99.90619,Female,,%,,,,Total
+Azerbaijan,AZ,AZE,31,Youth literacy rate for 15-24 years,2019,99.95867,Male,,%,,,,Total
+Azerbaijan,AZ,AZE,31,Youth literacy rate for 15-24 years,2019,99.93393,Total,,%,,,,Total
+Bangladesh,BD,BGD,50,Youth literacy rate for 15-24 years,2020,95.85875,Female,,%,,,,Total
+Bangladesh,BD,BGD,50,Youth literacy rate for 15-24 years,2020,93.16417,Male,,%,,,,Total
+Bangladesh,BD,BGD,50,Youth literacy rate for 15-24 years,2020,94.46178,Total,,%,,,,Total
+Belarus,BY,BLR,112,Youth literacy rate for 15-24 years,2019,99.89983,Female,,%,,,,Total
+Belarus,BY,BLR,112,Youth literacy rate for 15-24 years,2019,99.84713,Male,,%,,,,Total
+Belarus,BY,BLR,112,Youth literacy rate for 15-24 years,2019,99.87283,Total,,%,,,,Total
+Benin,BJ,BEN,204,Youth literacy rate for 15-24 years,2018,51.94362,Female,,%,,,,Total
+Benin,BJ,BEN,204,Youth literacy rate for 15-24 years,2018,69.76118,Male,,%,,,,Total
+Benin,BJ,BEN,204,Youth literacy rate for 15-24 years,2018,60.94808,Total,,%,,,,Total
+Bolivia,BO,BOL,68,Youth literacy rate for 15-24 years,2020,99.52896,Female,,%,,,,Total
+Bolivia,BO,BOL,68,Youth literacy rate for 15-24 years,2020,99.58474,Male,,%,,,,Total
+Bolivia,BO,BOL,68,Youth literacy rate for 15-24 years,2020,99.55659,Total,,%,,,,Total
+Brazil,BR,BRA,76,Youth literacy rate for 15-24 years,2018,99.43153,Female,,%,,,,Total
+Brazil,BR,BRA,76,Youth literacy rate for 15-24 years,2018,98.98358,Male,,%,,,,Total
+Brazil,BR,BRA,76,Youth literacy rate for 15-24 years,2018,99.20417,Total,,%,,,,Total
+Brunei Darussalam,BN,BRN,96,Youth literacy rate for 15-24 years,2018,99.78966,Female,,%,,,,Total
+Brunei Darussalam,BN,BRN,96,Youth literacy rate for 15-24 years,2018,99.63516,Male,,%,,,,Total
+Brunei Darussalam,BN,BRN,96,Youth literacy rate for 15-24 years,2018,99.70894,Total,,%,,,,Total
+Burkina Faso,BF,BFA,854,Youth literacy rate for 15-24 years,2018,54.45067,Female,,%,,,,Total
+Burkina Faso,BF,BFA,854,Youth literacy rate for 15-24 years,2018,63.86195,Male,,%,,,,Total
+Burkina Faso,BF,BFA,854,Youth literacy rate for 15-24 years,2018,58.87398,Total,,%,,,,Total
+Cameroon,CM,CMR,120,Youth literacy rate for 15-24 years,2018,82.41,Female,,%,,,,Total
+Cameroon,CM,CMR,120,Youth literacy rate for 15-24 years,2018,87.72,Male,,%,,,,Total
+Cameroon,CM,CMR,120,Youth literacy rate for 15-24 years,2018,85.08,Total,,%,,,,Total
+Central African Republic,CF,CAF,140,Youth literacy rate for 15-24 years,2018,28.70666,Female,,%,,,,Total
+Central African Republic,CF,CAF,140,Youth literacy rate for 15-24 years,2018,47.80493,Male,,%,,,,Total
+Central African Republic,CF,CAF,140,Youth literacy rate for 15-24 years,2018,38.26865,Total,,%,,,,Total
+China,CN,CHN,156,Youth literacy rate for 15-24 years,2018,99.78338,Female,,%,,,,Total
+China,CN,CHN,156,Youth literacy rate for 15-24 years,2018,99.78379,Male,,%,,,,Total
+China,CN,CHN,156,Youth literacy rate for 15-24 years,2018,99.7836,Total,,%,,,,Total
+Colombia,CO,COL,170,Youth literacy rate for 15-24 years,2020,99.29406,Female,,%,,,,Total
+Colombia,CO,COL,170,Youth literacy rate for 15-24 years,2020,98.72787,Male,,%,,,,Total
+Colombia,CO,COL,170,Youth literacy rate for 15-24 years,2020,99.01182,Total,,%,,,,Total
+Comoros,KM,COM,174,Youth literacy rate for 15-24 years,2018,78.30236,Female,,%,,,,Total
+Comoros,KM,COM,174,Youth literacy rate for 15-24 years,2018,78.23941,Male,,%,,,,Total
+Comoros,KM,COM,174,Youth literacy rate for 15-24 years,2018,78.27039,Total,,%,,,,Total
+Congo,CG,COG,178,Youth literacy rate for 15-24 years,2018,78.74231,Female,,%,,,,Total
+Congo,CG,COG,178,Youth literacy rate for 15-24 years,2018,85.34165,Male,,%,,,,Total
+Congo,CG,COG,178,Youth literacy rate for 15-24 years,2018,82.05479,Total,,%,,,,Total
+Costa Rica,CR,CRI,188,Youth literacy rate for 15-24 years,2018,99.53,Female,,%,,,,Total
+Costa Rica,CR,CRI,188,Youth literacy rate for 15-24 years,2018,99.34,Male,,%,,,,Total
+Costa Rica,CR,CRI,188,Youth literacy rate for 15-24 years,2018,99.43,Total,,%,,,,Total
+Ivory Coast,CI,CIV,384,Youth literacy rate for 15-24 years,2019,76.41314,Female,,%,,,,Total
+Ivory Coast,CI,CIV,384,Youth literacy rate for 15-24 years,2019,92.82019,Male,,%,,,,Total
+Ivory Coast,CI,CIV,384,Youth literacy rate for 15-24 years,2019,83.62647,Total,,%,,,,Total
+Ecuador,EC,ECU,218,Youth literacy rate for 15-24 years,2020,99.09054,Female,,%,,,,Total
+Ecuador,EC,ECU,218,Youth literacy rate for 15-24 years,2020,98.49576,Male,,%,,,,Total
+Ecuador,EC,ECU,218,Youth literacy rate for 15-24 years,2020,98.76704,Total,,%,,,,Total
+El Salvador,SV,SLV,222,Youth literacy rate for 15-24 years,2020,98.72357,Female,,%,,,,Total
+El Salvador,SV,SLV,222,Youth literacy rate for 15-24 years,2020,98.31355,Male,,%,,,,Total
+El Salvador,SV,SLV,222,Youth literacy rate for 15-24 years,2020,98.52016,Total,,%,,,,Total
+Eritrea,ER,ERI,232,Youth literacy rate for 15-24 years,2018,92.71403,Female,,%,,,,Total
+Eritrea,ER,ERI,232,Youth literacy rate for 15-24 years,2018,93.81868,Male,,%,,,,Total
+Eritrea,ER,ERI,232,Youth literacy rate for 15-24 years,2018,93.27239,Total,,%,,,,Total
+Swaziland,SZ,SWZ,748,Youth literacy rate for 15-24 years,2018,96.69525,Female,,%,,,,Total
+Swaziland,SZ,SWZ,748,Youth literacy rate for 15-24 years,2018,94.29769,Male,,%,,,,Total
+Swaziland,SZ,SWZ,748,Youth literacy rate for 15-24 years,2018,95.46937,Total,,%,,,,Total
+Gabon,GA,GAB,266,Youth literacy rate for 15-24 years,2018,91.44938,Female,,%,,,,Total
+Gabon,GA,GAB,266,Youth literacy rate for 15-24 years,2018,88.14196,Male,,%,,,,Total
+Gabon,GA,GAB,266,Youth literacy rate for 15-24 years,2018,89.78366,Total,,%,,,,Total
+Georgia,GE,GEO,268,Youth literacy rate for 15-24 years,2019,99.6822,Female,,%,,,,Total
+Georgia,GE,GEO,268,Youth literacy rate for 15-24 years,2019,99.72337,Male,,%,,,,Total
+Georgia,GE,GEO,268,Youth literacy rate for 15-24 years,2019,99.70421,Total,,%,,,,Total
+Ghana,GH,GHA,288,Youth literacy rate for 15-24 years,2018,92.20855,Female,,%,,,,Total
+Ghana,GH,GHA,288,Youth literacy rate for 15-24 years,2018,92.761,Male,,%,,,,Total
+Ghana,GH,GHA,288,Youth literacy rate for 15-24 years,2018,92.49097,Total,,%,,,,Total
+Greece,GR,GRC,300,Youth literacy rate for 15-24 years,2018,99.07,Female,,%,,,,Total
+Greece,GR,GRC,300,Youth literacy rate for 15-24 years,2018,99.26,Male,,%,,,,Total
+Greece,GR,GRC,300,Youth literacy rate for 15-24 years,2018,99.16,Total,,%,,,,Total
+Guatemala,GT,GTM,320,Youth literacy rate for 15-24 years,2018,93.86512,Female,,%,,,,Total
+Guatemala,GT,GTM,320,Youth literacy rate for 15-24 years,2018,95.37834,Male,,%,,,,Total
+Guatemala,GT,GTM,320,Youth literacy rate for 15-24 years,2018,94.60415,Total,,%,,,,Total
+Guinea,GN,GIN,324,Youth literacy rate for 15-24 years,2018,43.46918,Female,,%,,,,Total
+Guinea,GN,GIN,324,Youth literacy rate for 15-24 years,2018,69.63989,Male,,%,,,,Total
+Guinea,GN,GIN,324,Youth literacy rate for 15-24 years,2018,53.94052,Total,,%,,,,Total
+Honduras,HN,HND,340,Youth literacy rate for 15-24 years,2019,97.28868,Female,,%,,,,Total
+Honduras,HN,HND,340,Youth literacy rate for 15-24 years,2019,94.84312,Male,,%,,,,Total
+Honduras,HN,HND,340,Youth literacy rate for 15-24 years,2019,96.08389,Total,,%,,,,Total
+India,IN,IND,356,Youth literacy rate for 15-24 years,2018,90.16941,Female,,%,,,,Total
+India,IN,IND,356,Youth literacy rate for 15-24 years,2018,92.99297,Male,,%,,,,Total
+India,IN,IND,356,Youth literacy rate for 15-24 years,2018,91.66404,Total,,%,,,,Total
+Indonesia,ID,IDN,360,Youth literacy rate for 15-24 years,2020,99.78145,Female,,%,,,,Total
+Indonesia,ID,IDN,360,Youth literacy rate for 15-24 years,2020,99.77767,Male,,%,,,,Total
+Indonesia,ID,IDN,360,Youth literacy rate for 15-24 years,2020,99.77951,Total,,%,,,,Total
+Italy,IT,ITA,380,Youth literacy rate for 15-24 years,2019,99.92654,Female,,%,,,,Total
+Italy,IT,ITA,380,Youth literacy rate for 15-24 years,2019,99.82589,Male,,%,,,,Total
+Italy,IT,ITA,380,Youth literacy rate for 15-24 years,2019,99.87422,Total,,%,,,,Total
+Jordan,JO,JOR,400,Youth literacy rate for 15-24 years,2018,99.49391,Female,,%,,,,Total
+Jordan,JO,JOR,400,Youth literacy rate for 15-24 years,2018,99.19612,Male,,%,,,,Total
+Jordan,JO,JOR,400,Youth literacy rate for 15-24 years,2018,99.34374,Total,,%,,,,Total
+Kazakhstan,KZ,KAZ,398,Youth literacy rate for 15-24 years,2018,99.85091,Female,,%,,,,Total
+Kazakhstan,KZ,KAZ,398,Youth literacy rate for 15-24 years,2018,99.94014,Male,,%,,,,Total
+Kazakhstan,KZ,KAZ,398,Youth literacy rate for 15-24 years,2018,99.89736,Total,,%,,,,Total
+Kenya,KE,KEN,404,Youth literacy rate for 15-24 years,2018,88.08,Female,,%,,,,Total
+Kenya,KE,KEN,404,Youth literacy rate for 15-24 years,2018,87.59,Male,,%,,,,Total
+Kenya,KE,KEN,404,Youth literacy rate for 15-24 years,2018,87.83,Total,,%,,,,Total
+Kuwait,KW,KWT,414,Youth literacy rate for 15-24 years,2020,99.57578,Female,,%,,,,Total
+Kuwait,KW,KWT,414,Youth literacy rate for 15-24 years,2020,99.1044,Male,,%,,,,Total
+Kuwait,KW,KWT,414,Youth literacy rate for 15-24 years,2020,99.30332,Total,,%,,,,Total
+Kyrgyzstan,KG,KGZ,417,Youth literacy rate for 15-24 years,2018,99.81,Female,,%,,,,Total
+Kyrgyzstan,KG,KGZ,417,Youth literacy rate for 15-24 years,2018,99.69,Male,,%,,,,Total
+Kyrgyzstan,KG,KGZ,417,Youth literacy rate for 15-24 years,2018,99.75,Total,,%,,,,Total
+Latvia,LV,LVA,428,Youth literacy rate for 15-24 years,2018,99.86,Female,,%,,,,Total
+Latvia,LV,LVA,428,Youth literacy rate for 15-24 years,2018,99.78,Male,,%,,,,Total
+Latvia,LV,LVA,428,Youth literacy rate for 15-24 years,2018,99.82,Total,,%,,,,Total
+Lebanon,LB,LBN,422,Youth literacy rate for 15-24 years,2018,99.83898,Female,,%,,,,Total
+Lebanon,LB,LBN,422,Youth literacy rate for 15-24 years,2018,99.66274,Male,,%,,,,Total
+Lebanon,LB,LBN,422,Youth literacy rate for 15-24 years,2018,99.75182,Total,,%,,,,Total
+Madagascar,MG,MDG,450,Youth literacy rate for 15-24 years,2018,79.18119,Female,,%,,,,Total
+Madagascar,MG,MDG,450,Youth literacy rate for 15-24 years,2018,80.57806,Male,,%,,,,Total
+Madagascar,MG,MDG,450,Youth literacy rate for 15-24 years,2018,79.85117,Total,,%,,,,Total
+Malaysia,MY,MYS,458,Youth literacy rate for 15-24 years,2019,96.97591,Female,,%,,,,Total
+Malaysia,MY,MYS,458,Youth literacy rate for 15-24 years,2019,96.59851,Male,,%,,,,Total
+Malaysia,MY,MYS,458,Youth literacy rate for 15-24 years,2019,96.7784,Total,,%,,,,Total
+Mali,ML,MLI,466,Youth literacy rate for 15-24 years,2020,38.45202,Female,,%,,,,Total
+Mali,ML,MLI,466,Youth literacy rate for 15-24 years,2020,55.22719,Male,,%,,,,Total
+Mali,ML,MLI,466,Youth literacy rate for 15-24 years,2020,46.15734,Total,,%,,,,Total
+Malta,MT,MLT,470,Youth literacy rate for 15-24 years,2018,99.56088,Female,,%,,,,Total
+Malta,MT,MLT,470,Youth literacy rate for 15-24 years,2018,99.05695,Male,,%,,,,Total
+Malta,MT,MLT,470,Youth literacy rate for 15-24 years,2018,99.30071,Total,,%,,,,Total
+Mexico,MX,MEX,484,Youth literacy rate for 15-24 years,2020,99.17142,Female,,%,,,,Total
+Mexico,MX,MEX,484,Youth literacy rate for 15-24 years,2020,98.99364,Male,,%,,,,Total
+Mexico,MX,MEX,484,Youth literacy rate for 15-24 years,2020,99.08241,Total,,%,,,,Total
+Mongolia,MN,MNG,496,Youth literacy rate for 15-24 years,2020,99.22561,Female,,%,,,,Total
+Mongolia,MN,MNG,496,Youth literacy rate for 15-24 years,2020,98.92643,Male,,%,,,,Total
+Mongolia,MN,MNG,496,Youth literacy rate for 15-24 years,2020,99.07434,Total,,%,,,,Total
+Montenegro,ME,MNE,499,Youth literacy rate for 15-24 years,2018,98.97,Female,,%,,,,Total
+Montenegro,ME,MNE,499,Youth literacy rate for 15-24 years,2018,99.23,Male,,%,,,,Total
+Montenegro,ME,MNE,499,Youth literacy rate for 15-24 years,2018,99.11,Total,,%,,,,Total
+Morocco,MA,MAR,504,Youth literacy rate for 15-24 years,2018,97.4,Female,,%,,,,Total
+Morocco,MA,MAR,504,Youth literacy rate for 15-24 years,2018,98.04,Male,,%,,,,Total
+Morocco,MA,MAR,504,Youth literacy rate for 15-24 years,2018,97.73,Total,,%,,,,Total
+Myanmar,MM,MMR,104,Youth literacy rate for 15-24 years,2019,95.5529,Female,,%,,,,Total
+Myanmar,MM,MMR,104,Youth literacy rate for 15-24 years,2019,95.27067,Male,,%,,,,Total
+Myanmar,MM,MMR,104,Youth literacy rate for 15-24 years,2019,95.41512,Total,,%,,,,Total
+Namibia,,NAM,516,Youth literacy rate for 15-24 years,2018,96.19844,Female,,%,,,,Total
+Namibia,,NAM,516,Youth literacy rate for 15-24 years,2018,94.10937,Male,,%,,,,Total
+Namibia,,NAM,516,Youth literacy rate for 15-24 years,2018,95.1649,Total,,%,,,,Total
+Nepal,NP,NPL,524,Youth literacy rate for 15-24 years,2018,90.88347,Female,,%,,,,Total
+Nepal,NP,NPL,524,Youth literacy rate for 15-24 years,2018,94.03428,Male,,%,,,,Total
+Nepal,NP,NPL,524,Youth literacy rate for 15-24 years,2018,92.39381,Total,,%,,,,Total
+Niger,NE,NER,562,Youth literacy rate for 15-24 years,2018,35.56,Female,,%,,,,Total
+Niger,NE,NER,562,Youth literacy rate for 15-24 years,2018,51.07,Male,,%,,,,Total
+Niger,NE,NER,562,Youth literacy rate for 15-24 years,2018,43.46,Total,,%,,,,Total
+Nigeria,NG,NGA,566,Youth literacy rate for 15-24 years,2018,68.26263,Female,,%,,,,Total
+Nigeria,NG,NGA,566,Youth literacy rate for 15-24 years,2018,81.58064,Male,,%,,,,Total
+Nigeria,NG,NGA,566,Youth literacy rate for 15-24 years,2018,75.02875,Total,,%,,,,Total
+Oman,OM,OMN,512,Youth literacy rate for 15-24 years,2018,98.97943,Female,,%,,,,Total
+Oman,OM,OMN,512,Youth literacy rate for 15-24 years,2018,98.35663,Male,,%,,,,Total
+Oman,OM,OMN,512,Youth literacy rate for 15-24 years,2018,98.61783,Total,,%,,,,Total
+Pakistan,PK,PAK,586,Youth literacy rate for 15-24 years,2019,65.18558,Female,,%,,,,Total
+Pakistan,PK,PAK,586,Youth literacy rate for 15-24 years,2019,79.72925,Male,,%,,,,Total
+Pakistan,PK,PAK,586,Youth literacy rate for 15-24 years,2019,72.70356,Total,,%,,,,Total
+Panama,PA,PAN,591,Youth literacy rate for 15-24 years,2019,98.85901,Female,,%,,,,Total
+Panama,PA,PAN,591,Youth literacy rate for 15-24 years,2019,98.90382,Male,,%,,,,Total
+Panama,PA,PAN,591,Youth literacy rate for 15-24 years,2019,98.88174,Total,,%,,,,Total
+Paraguay,PY,PRY,600,Youth literacy rate for 15-24 years,2020,98.65762,Female,,%,,,,Total
+Paraguay,PY,PRY,600,Youth literacy rate for 15-24 years,2020,98.63162,Male,,%,,,,Total
+Paraguay,PY,PRY,600,Youth literacy rate for 15-24 years,2020,98.64471,Total,,%,,,,Total
+Peru,PE,PER,604,Youth literacy rate for 15-24 years,2020,99.35149,Female,,%,,,,Total
+Peru,PE,PER,604,Youth literacy rate for 15-24 years,2020,99.51778,Male,,%,,,,Total
+Peru,PE,PER,604,Youth literacy rate for 15-24 years,2020,99.43636,Total,,%,,,,Total
+Philippines,PH,PHL,608,Youth literacy rate for 15-24 years,2019,98.89291,Female,,%,,,,Total
+Philippines,PH,PHL,608,Youth literacy rate for 15-24 years,2019,97.89731,Male,,%,,,,Total
+Philippines,PH,PHL,608,Youth literacy rate for 15-24 years,2019,98.38451,Total,,%,,,,Total
+Portugal,PT,PRT,620,Youth literacy rate for 15-24 years,2018,99.70156,Female,,%,,,,Total
+Portugal,PT,PRT,620,Youth literacy rate for 15-24 years,2018,99.62657,Male,,%,,,,Total
+Portugal,PT,PRT,620,Youth literacy rate for 15-24 years,2018,99.66392,Total,,%,,,,Total
+Romania,RO,ROU,642,Youth literacy rate for 15-24 years,2018,99.43968,Female,,%,,,,Total
+Romania,RO,ROU,642,Youth literacy rate for 15-24 years,2018,99.41938,Male,,%,,,,Total
+Romania,RO,ROU,642,Youth literacy rate for 15-24 years,2018,99.42919,Total,,%,,,,Total
+Russia,RU,RUS,643,Youth literacy rate for 15-24 years,2018,99.74909,Female,,%,,,,Total
+Russia,RU,RUS,643,Youth literacy rate for 15-24 years,2018,99.64997,Male,,%,,,,Total
+Russia,RU,RUS,643,Youth literacy rate for 15-24 years,2018,99.69845,Total,,%,,,,Total
+Rwanda,RW,RWA,646,Youth literacy rate for 15-24 years,2018,88.50182,Female,,%,,,,Total
+Rwanda,RW,RWA,646,Youth literacy rate for 15-24 years,2018,84.32593,Male,,%,,,,Total
+Rwanda,RW,RWA,646,Youth literacy rate for 15-24 years,2018,86.49277,Total,,%,,,,Total
+Samoa,WS,WSM,882,Youth literacy rate for 15-24 years,2018,99.43575,Female,,%,,,,Total
+Samoa,WS,WSM,882,Youth literacy rate for 15-24 years,2018,98.84151,Male,,%,,,,Total
+Samoa,WS,WSM,882,Youth literacy rate for 15-24 years,2018,99.12348,Total,,%,,,,Total
+Sao Tome and Principe,ST,STP,678,Youth literacy rate for 15-24 years,2018,97.85418,Female,,%,,,,Total
+Sao Tome and Principe,ST,STP,678,Youth literacy rate for 15-24 years,2018,97.71246,Male,,%,,,,Total
+Sao Tome and Principe,ST,STP,678,Youth literacy rate for 15-24 years,2018,97.78255,Total,,%,,,,Total
+Saudi Arabia,SA,SAU,682,Youth literacy rate for 15-24 years,2020,99.44731,Female,,%,,,,Total
+Saudi Arabia,SA,SAU,682,Youth literacy rate for 15-24 years,2020,99.54517,Male,,%,,,,Total
+Saudi Arabia,SA,SAU,682,Youth literacy rate for 15-24 years,2020,99.49841,Total,,%,,,,Total
+Serbia,RS,SRB,688,Youth literacy rate for 15-24 years,2019,99.99942,Female,,%,,,,Total
+Serbia,RS,SRB,688,Youth literacy rate for 15-24 years,2019,99.99946,Male,,%,,,,Total
+Serbia,RS,SRB,688,Youth literacy rate for 15-24 years,2019,99.99944,Total,,%,,,,Total
+Seychelles,SC,SYC,690,Youth literacy rate for 15-24 years,2018,99.6,Female,,%,,,,Total
+Seychelles,SC,SYC,690,Youth literacy rate for 15-24 years,2018,98.56,Male,,%,,,,Total
+Seychelles,SC,SYC,690,Youth literacy rate for 15-24 years,2018,99.07,Total,,%,,,,Total
+Sierra Leone,SL,SLE,694,Youth literacy rate for 15-24 years,2018,62.69922,Female,,%,,,,Total
+Sierra Leone,SL,SLE,694,Youth literacy rate for 15-24 years,2018,70.57611,Male,,%,,,,Total
+Sierra Leone,SL,SLE,694,Youth literacy rate for 15-24 years,2018,66.6486,Total,,%,,,,Total
+Singapore,SG,SGP,702,Youth literacy rate for 15-24 years,2020,99.78702,Female,,%,,,,Total
+Singapore,SG,SGP,702,Youth literacy rate for 15-24 years,2020,99.66854,Male,,%,,,,Total
+Singapore,SG,SGP,702,Youth literacy rate for 15-24 years,2020,99.72625,Total,,%,,,,Total
+South Africa,ZA,ZAF,710,Youth literacy rate for 15-24 years,2019,98.82957,Female,,%,,,,Total
+South Africa,ZA,ZAF,710,Youth literacy rate for 15-24 years,2019,97.98624,Male,,%,,,,Total
+South Africa,ZA,ZAF,710,Youth literacy rate for 15-24 years,2019,98.40953,Total,,%,,,,Total
+South Sudan,SS,SSD,728,Youth literacy rate for 15-24 years,2018,47.3692,Female,,%,,,,Total
+South Sudan,SS,SSD,728,Youth literacy rate for 15-24 years,2018,48.42514,Male,,%,,,,Total
+South Sudan,SS,SSD,728,Youth literacy rate for 15-24 years,2018,47.90096,Total,,%,,,,Total
+Spain,ES,ESP,724,Youth literacy rate for 15-24 years,2020,99.75504,Female,,%,,,,Total
+Spain,ES,ESP,724,Youth literacy rate for 15-24 years,2020,99.49479,Male,,%,,,,Total
+Spain,ES,ESP,724,Youth literacy rate for 15-24 years,2020,99.62142,Total,,%,,,,Total
+Sri Lanka,LK,LKA,144,Youth literacy rate for 15-24 years,2020,99.12386,Female,,%,,,,Total
+Sri Lanka,LK,LKA,144,Youth literacy rate for 15-24 years,2020,98.58624,Male,,%,,,,Total
+Sri Lanka,LK,LKA,144,Youth literacy rate for 15-24 years,2020,98.85923,Total,,%,,,,Total
+"Palestinian Territory, Occupied",PS,PSE,275,Youth literacy rate for 15-24 years,2020,99.24502,Female,,%,,,,Total
+"Palestinian Territory, Occupied",PS,PSE,275,Youth literacy rate for 15-24 years,2020,99.22022,Male,,%,,,,Total
+"Palestinian Territory, Occupied",PS,PSE,275,Youth literacy rate for 15-24 years,2020,99.23235,Total,,%,,,,Total
+Sudan,SD,SDN,736,Youth literacy rate for 15-24 years,2018,73.49,Female,,%,,,,Total
+Sudan,SD,SDN,736,Youth literacy rate for 15-24 years,2018,72.51,Male,,%,,,,Total
+Sudan,SD,SDN,736,Youth literacy rate for 15-24 years,2018,73,Total,,%,,,,Total
+Suriname,SR,SUR,740,Youth literacy rate for 15-24 years,2018,98.39996,Female,,%,,,,Total
+Suriname,SR,SUR,740,Youth literacy rate for 15-24 years,2018,98.87544,Male,,%,,,,Total
+Suriname,SR,SUR,740,Youth literacy rate for 15-24 years,2018,98.64556,Total,,%,,,,Total
+Thailand,TH,THA,764,Youth literacy rate for 15-24 years,2018,98.59393,Female,,%,,,,Total
+Thailand,TH,THA,764,Youth literacy rate for 15-24 years,2018,97.69088,Male,,%,,,,Total
+Thailand,TH,THA,764,Youth literacy rate for 15-24 years,2018,98.13717,Total,,%,,,,Total
+Timor-Leste,TL,TLS,626,Youth literacy rate for 15-24 years,2018,84.65051,Female,,%,,,,Total
+Timor-Leste,TL,TLS,626,Youth literacy rate for 15-24 years,2018,82.45848,Male,,%,,,,Total
+Timor-Leste,TL,TLS,626,Youth literacy rate for 15-24 years,2018,83.53903,Total,,%,,,,Total
+Togo,TG,TGO,768,Youth literacy rate for 15-24 years,2019,84.00565,Female,,%,,,,Total
+Togo,TG,TGO,768,Youth literacy rate for 15-24 years,2019,92.08284,Male,,%,,,,Total
+Togo,TG,TGO,768,Youth literacy rate for 15-24 years,2019,87.89144,Total,,%,,,,Total
+Tonga,TO,TON,776,Youth literacy rate for 15-24 years,2018,99.53978,Female,,%,,,,Total
+Tonga,TO,TON,776,Youth literacy rate for 15-24 years,2018,99.34871,Male,,%,,,,Total
+Tonga,TO,TON,776,Youth literacy rate for 15-24 years,2018,99.44112,Total,,%,,,,Total
+Turkey,TR,TUR,792,Youth literacy rate for 15-24 years,2019,99.84731,Female,,%,,,,Total
+Turkey,TR,TUR,792,Youth literacy rate for 15-24 years,2019,99.96417,Male,,%,,,,Total
+Turkey,TR,TUR,792,Youth literacy rate for 15-24 years,2019,99.90715,Total,,%,,,,Total
+Uganda,UG,UGA,800,Youth literacy rate for 15-24 years,2018,89.95064,Female,,%,,,,Total
+Uganda,UG,UGA,800,Youth literacy rate for 15-24 years,2018,88.8269,Male,,%,,,,Total
+Uganda,UG,UGA,800,Youth literacy rate for 15-24 years,2018,89.39631,Total,,%,,,,Total
+United Arab Emirates,AE,ARE,784,Youth literacy rate for 15-24 years,2019,97.9254,Female,,%,,,,Total
+United Arab Emirates,AE,ARE,784,Youth literacy rate for 15-24 years,2019,95.13563,Male,,%,,,,Total
+United Arab Emirates,AE,ARE,784,Youth literacy rate for 15-24 years,2019,96.31158,Total,,%,,,,Total
+Uruguay,UY,URY,858,Youth literacy rate for 15-24 years,2019,99.32463,Female,,%,,,,Total
+Uruguay,UY,URY,858,Youth literacy rate for 15-24 years,2019,98.73756,Male,,%,,,,Total
+Uruguay,UY,URY,858,Youth literacy rate for 15-24 years,2019,99.02065,Total,,%,,,,Total
+Uzbekistan,UZ,UZB,860,Youth literacy rate for 15-24 years,2019,99.99992,Female,,%,,,,Total
+Uzbekistan,UZ,UZB,860,Youth literacy rate for 15-24 years,2019,99.99992,Male,,%,,,,Total
+Uzbekistan,UZ,UZB,860,Youth literacy rate for 15-24 years,2019,99.99992,Total,,%,,,,Total
+Vanuatu,VU,VUT,548,Youth literacy rate for 15-24 years,2018,96.59661,Female,,%,,,,Total
+Vanuatu,VU,VUT,548,Youth literacy rate for 15-24 years,2018,95.97657,Male,,%,,,,Total
+Vanuatu,VU,VUT,548,Youth literacy rate for 15-24 years,2018,96.28212,Total,,%,,,,Total
+Viet Nam,VN,VNM,704,Youth literacy rate for 15-24 years,2019,98.53767,Female,,%,,,,Total
+Viet Nam,VN,VNM,704,Youth literacy rate for 15-24 years,2019,98.70862,Male,,%,,,,Total
+Viet Nam,VN,VNM,704,Youth literacy rate for 15-24 years,2019,98.62546,Total,,%,,,,Total
+Zambia,ZM,ZMB,894,Youth literacy rate for 15-24 years,2018,91.62819,Female,,%,,,,Total
+Zambia,ZM,ZMB,894,Youth literacy rate for 15-24 years,2018,92.55964,Male,,%,,,,Total
+Zambia,ZM,ZMB,894,Youth literacy rate for 15-24 years,2018,92.09157,Total,,%,,,,Total

@@ -1,108 +1,31 @@
 ---
-title: "UNICEF Youth Literacy & Water Access Dashboard"
-subtitle: "BAA 1030 Data Analytics and Story Telling Assignment #2"
+title: "Global Youth Literacy vs Fundamental Infrastructure"
+subtitle: "An Executive Analysis of UNICEF Global Data"
 author: "Vibhu, MSBM, DCU Student ID:A00053244"
-date: 12 April 2026
-toc: true
-toc-depth: 3
-number-sections: true
-theme:
-  light: cosmo
-  dark: darkly
-execute:
-  warning: false
-  message: false
-  echo: true
+date: "April 12, 2026"
 format:
   html:
-    embed-resources: true
+    theme: materia
+    toc: true
+    toc-depth: 3
     code-fold: true
-    code-tools: true
-    code-line-numbers: true
+    embed-resources: true
     smooth-scroll: true
-    anchor-sections: true
-    fig-responsive: true
-    grid:
-      body-width: 1200px
+execute:
+  echo: true
+  warning: false
+  fig-width: 5
+  fig-height: 5
 ---
 
-## Setup & Data Loading {#sec-setup}
-
-Install required Python packages and load the three UNICEF CSV files
-using **Polars** instead of Pandas.
-
 ```{python}
-#| label: setup
-#| echo: true
-#| warning: false
-#| message: false
-#| code-fold: true
-#| code-summary: "Core Library Setup & Raw files uploaded to Google Colab"
-
-import polars as pl
-import numpy as np
-import matplotlib.pyplot as plt
-from plotnine import *
-import warnings
-warnings.filterwarnings("ignore")
-
-# ── Load data with Polars ──
-literacy_df = pl.read_csv("unicef_indicator_1.csv")
-water_df    = pl.read_csv("unicef_indicator_2.csv")
-metadata_df = pl.read_csv("unicef_metadata.csv")
-
-print(f"Loaded: literacy={literacy_df.shape[0]}, water={water_df.shape[0]}, metadata={metadata_df.shape[0]} rows")
+#| label: setup-assembly
+#| include: false
+from IPython.display import Markdown, Image, display
+# Phase 2 Assembly Helper
 ```
 
-## Data Cleaning & Preparation {#sec-cleaning}
-
-```{python}
-#| label: cleaning
-#| echo: true
-#| warning: false
-#| message: false
-#| code-fold: true
-#| code-summary: "Polars Data Pre-Processing"
-
-# Standardise column names to lowercase with underscores
-for name in ["literacy_df", "water_df", "metadata_df"]:
-    df = eval(name)
-    new_cols = {c: c.strip().lower().replace(" ", "_") for c in df.columns}
-    exec(f"{name} = df.rename(new_cols)")
-
-# Detect key columns dynamically
-obs_col     = [c for c in literacy_df.columns if "obs_value" in c or "value" in c][0]
-sex_col     = [c for c in literacy_df.columns if "sex" in c][0]
-country_col = [c for c in literacy_df.columns if "country" in c and "alpha" not in c][0]
-alpha_col   = [c for c in literacy_df.columns if "alpha_3" in c][0]
-year_col    = [c for c in literacy_df.columns if "time" in c or "year" in c][0]
-
-w_obs       = [c for c in water_df.columns if "obs_value" in c or "value" in c][0]
-w_year_col  = [c for c in water_df.columns if "time" in c or "year" in c][0]
-
-# Metadata columns
-m_year = [c for c in metadata_df.columns if "year" in c or "time" in c][0]
-m_life = [c for c in metadata_df.columns if "life_expectancy" in c.lower() or "life" in c.lower()][0]
-m_gdp  = [c for c in metadata_df.columns if "gdp" in c.lower()][0]
-m_pop  = [c for c in metadata_df.columns if "pop" in c.lower()][0]
-meta_alpha = [c for c in metadata_df.columns if "alpha_3" in c][0]
-
-# Cast to float
-literacy_df = literacy_df.with_columns(pl.col(obs_col).cast(pl.Float64, strict=False).alias("obs_value"))
-water_df = water_df.with_columns(pl.col(w_obs).cast(pl.Float64, strict=False).alias("obs_value"))
-
-# Create master 'latest' literacy dataframe
-total = literacy_df.filter(pl.col(sex_col).str.to_lowercase() == "total")
-t_latest = (
-    total
-    .sort(year_col)
-    .group_by(alpha_col)
-    .last()
-    .select([alpha_col, country_col, "obs_value", year_col])
-)
-```
-
-## Executive Summary & Global Context {#sec-summary}
+# 1. Executive Summary
 
 > Our analysis explores the profound socioeconomic disparities defining youth literacy and access to basic human needs using the latest global survey metrics from **UNICEF**.
 
@@ -117,149 +40,386 @@ These findings unearth stark vulnerabilities: countries struggling with low basi
 
 ```{python}
 #| label: summary
-#| echo: true
-#| warning: false
-#| message: false
 #| code-fold: true
 #| code-summary: "Executive Widget Computation for display"
+#| output: asis
+#| eval: true
+# Render Phase 1 Static Data Dashboard (Generated natively in Google Colab)
+data_block1 = r"""
 
-total_countries = t_latest.shape[0]
-avg_lit = t_latest.select(pl.col("obs_value").mean()).item()
-lit_year = t_latest.select(pl.col(year_col).cast(pl.Int64, strict=False).max()).item()
+::: {.panel-tabset}
 
-# Gender gap
-female = literacy_df.filter(pl.col(sex_col).str.to_lowercase() == "female").sort(year_col).group_by(alpha_col).last().select([alpha_col, country_col, pl.col("obs_value").alias("female_rate")])
-male = literacy_df.filter(pl.col(sex_col).str.to_lowercase() == "male").sort(year_col).group_by(alpha_col).last().select([alpha_col, pl.col("obs_value").alias("male_rate")])
-gender = female.join(male, on=alpha_col, how="inner").with_columns((pl.col("male_rate") - pl.col("female_rate")).abs().alias("gap"))
-worst = gender.sort("gap", descending=True).head(1).row(0, named=True)
+## 2019 (19 Countries)
 
-def get_latest_stat(df, time_col, val_col, join_alpha, is_sum=False):
-    latest_data = df.with_columns([pl.col(time_col).cast(pl.Int64, strict=False), pl.col(val_col).cast(pl.Float64, strict=False)]).drop_nulls(subset=[time_col, val_col]).sort(time_col).group_by(join_alpha).last()
-    year_max = latest_data.select(pl.col(time_col).max()).item()
-    if is_sum:
-        return (latest_data.select(pl.col(val_col).sum()).item() or 0.0), year_max
-    return (latest_data.select(pl.col(val_col).mean()).item() or 0.0), year_max
-
-tot_pop, p_year = get_latest_stat(metadata_df, m_year, m_pop, meta_alpha, is_sum=True)
-tot_pop = tot_pop / 1e9
-avg_life, l_year = get_latest_stat(metadata_df, m_year, m_life, meta_alpha)
-avg_gdp, g_year = get_latest_stat(metadata_df, m_year, m_gdp, meta_alpha)
-avg_water, w_year = get_latest_stat(water_df, w_year_col, "obs_value", alpha_col)
-
-from IPython.display import HTML, display
-
-html_content = f"""
 <div style="font-family: ui-sans-serif, system-ui, sans-serif; background-color: #ffffff; border: 1px solid #e2e8f0; padding: 16px; border-radius: 12px; margin: 0 auto 30px auto; color: #334155; width: 100%; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);">
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
-    <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 16px; border-radius: 8px; display: flex; flex-direction: column; justify-content: center;">
-      <div style="font-size: 20px; font-weight: 700; color: #0891b2; margin-bottom: 2px; line-height: 1;">{total_countries}</div>
-      <div style="font-size: 11px; color: #64748b; margin-bottom: 2px; font-weight: 600; text-transform: uppercase;">Data: {lit_year}</div>
-      <div style="font-size: 14px; font-weight: 500; color: #475569;">Countries Analyzed</div>
-    </div>
-    <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 16px; border-radius: 8px; display: flex; flex-direction: column; justify-content: center;">
-      <div style="font-size: 20px; font-weight: 700; color: #0f172a; margin-bottom: 2px; line-height: 1;">{tot_pop:.2f}B</div>
-      <div style="font-size: 11px; color: #64748b; margin-bottom: 2px; font-weight: 600; text-transform: uppercase;">Data: {p_year}</div>
-      <div style="font-size: 14px; font-weight: 500; color: #475569;">Total Population</div>
-    </div>
-    <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 16px; border-radius: 8px; display: flex; flex-direction: column; justify-content: center;">
-      <div style="font-size: 20px; font-weight: 700; color: #0891b2; margin-bottom: 2px; line-height: 1;">{avg_lit:.1f}%</div>
-      <div style="font-size: 11px; color: #64748b; margin-bottom: 2px; font-weight: 600; text-transform: uppercase;">Data: {lit_year}</div>
-      <div style="font-size: 14px; font-weight: 500; color: #475569;">Avg Youth Literacy</div>
-    </div>
-    <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 16px; border-radius: 8px; display: flex; flex-direction: column; justify-content: center;">
-      <div style="font-size: 20px; font-weight: 700; color: #059669; margin-bottom: 2px; line-height: 1;">{avg_life:.1f}yr</div>
-      <div style="font-size: 11px; color: #64748b; margin-bottom: 2px; font-weight: 600; text-transform: uppercase;">Data: {l_year}</div>
-      <div style="font-size: 14px; font-weight: 500; color: #475569;">Avg Life Expectancy</div>
-    </div>
-    <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 16px; border-radius: 8px; display: flex; flex-direction: column; justify-content: center;">
-      <div style="font-size: 20px; font-weight: 700; color: #d97706; margin-bottom: 2px; line-height: 1;">${avg_gdp:,.0f}</div>
-      <div style="font-size: 11px; color: #64748b; margin-bottom: 2px; font-weight: 600; text-transform: uppercase;">Data: {g_year}</div>
-      <div style="font-size: 14px; font-weight: 500; color: #475569;">Avg GDP/Capita</div>
-    </div>
-    <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 16px; border-radius: 8px; display: flex; flex-direction: column; justify-content: center;">
-      <div style="font-size: 20px; font-weight: 700; color: #ea580c; margin-bottom: 2px; line-height: 1;">{avg_water:.1f}%</div>
-      <div style="font-size: 11px; color: #64748b; margin-bottom: 2px; font-weight: 600; text-transform: uppercase;">Data: {w_year}</div>
-      <div style="font-size: 14px; font-weight: 500; color: #475569;">Avg Water Access</div>
-    </div>
-  </div>
-  <div style="background-color: #fff1f2; border: 1px solid #fecdd3; padding: 12px 16px; border-radius: 8px; display: flex; align-items: center; gap: 10px;">
-    <div style="font-size: 14px; font-weight: 600; color: #e11d48; letter-spacing: 0.02em;">LARGEST GENDER GAP</div>
-    <div style="font-size: 18px; font-weight: 700; color: #be123c; margin-left: 4px;">{worst['gap']:.1f}pp</div>
-    <div style="font-size: 14px; color: #4c1d95; font-weight: 500;">in {worst[country_col]}</div>
-  </div>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+<div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 16px; border-radius: 8px; display: flex; flex-direction: column; justify-content: center;">
+<div style="font-size: 20px; font-weight: 700; color: #0891b2; margin-bottom: 2px; line-height: 1;">19</div>
+<div style="font-size: 11px; color: #64748b; margin-bottom: 2px; font-weight: 600; text-transform: uppercase;">Data: 2019</div>
+<div style="font-size: 14px; font-weight: 500; color: #475569;">Countries Analyzed</div>
 </div>
+<div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 16px; border-radius: 8px; display: flex; flex-direction: column; justify-content: center;">
+<div style="font-size: 20px; font-weight: 700; color: #0f172a; margin-bottom: 2px; line-height: 1;">7.75B</div>
+<div style="font-size: 11px; color: #64748b; margin-bottom: 2px; font-weight: 600; text-transform: uppercase;">Data: 2019</div>
+<div style="font-size: 14px; font-weight: 500; color: #475569;">Total Population</div>
+</div>
+<div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 16px; border-radius: 8px; display: flex; flex-direction: column; justify-content: center;">
+<div style="font-size: 20px; font-weight: 700; color: #0891b2; margin-bottom: 2px; line-height: 1;">95.9%</div>
+<div style="font-size: 11px; color: #64748b; margin-bottom: 2px; font-weight: 600; text-transform: uppercase;">Data: 2019</div>
+<div style="font-size: 14px; font-weight: 500; color: #475569;">Avg Youth Literacy</div>
+</div>
+<div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 16px; border-radius: 8px; display: flex; flex-direction: column; justify-content: center;">
+<div style="font-size: 20px; font-weight: 700; color: #059669; margin-bottom: 2px; line-height: 1;">73.0yr</div>
+<div style="font-size: 11px; color: #64748b; margin-bottom: 2px; font-weight: 600; text-transform: uppercase;">Data: 2019</div>
+<div style="font-size: 14px; font-weight: 500; color: #475569;">Avg Life Expectancy</div>
+</div>
+<div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 16px; border-radius: 8px; display: flex; flex-direction: column; justify-content: center;">
+<div style="font-size: 20px; font-weight: 700; color: #d97706; margin-bottom: 2px; line-height: 1;">$17,325</div>
+<div style="font-size: 11px; color: #64748b; margin-bottom: 2px; font-weight: 600; text-transform: uppercase;">Data: 2019</div>
+<div style="font-size: 14px; font-weight: 500; color: #475569;">Avg GDP/Capita</div>
+</div>
+<div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 16px; border-radius: 8px; display: flex; flex-direction: column; justify-content: center;">
+<div style="font-size: 20px; font-weight: 700; color: #ea580c; margin-bottom: 2px; line-height: 1;">75.6%</div>
+<div style="font-size: 11px; color: #64748b; margin-bottom: 2px; font-weight: 600; text-transform: uppercase;">Data: 2019</div>
+<div style="font-size: 14px; font-weight: 500; color: #475569;">Avg Water Access</div>
+</div>
+</div>
+<div style="background-color: #fff1f2; border: 1px solid #fecdd3; padding: 12px 16px; border-radius: 8px; display: flex; align-items: center; gap: 10px;">
+<div style="font-size: 14px; font-weight: 600; color: #e11d48; letter-spacing: 0.02em;">LARGEST GENDER GAP</div>
+<div style="font-size: 18px; font-weight: 700; color: #be123c; margin-left: 4px;">16.4pp</div>
+<div style="font-size: 14px; color: #4c1d95; font-weight: 500;">in Ivory Coast</div>
+</div>
+</div>
+
+
+## 2020 (18 Countries)
+
+<div style="font-family: ui-sans-serif, system-ui, sans-serif; background-color: #ffffff; border: 1px solid #e2e8f0; padding: 16px; border-radius: 12px; margin: 0 auto 30px auto; color: #334155; width: 100%; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);">
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+<div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 16px; border-radius: 8px; display: flex; flex-direction: column; justify-content: center;">
+<div style="font-size: 20px; font-weight: 700; color: #0891b2; margin-bottom: 2px; line-height: 1;">18</div>
+<div style="font-size: 11px; color: #64748b; margin-bottom: 2px; font-weight: 600; text-transform: uppercase;">Data: 2020</div>
+<div style="font-size: 14px; font-weight: 500; color: #475569;">Countries Analyzed</div>
+</div>
+<div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 16px; border-radius: 8px; display: flex; flex-direction: column; justify-content: center;">
+<div style="font-size: 20px; font-weight: 700; color: #0f172a; margin-bottom: 2px; line-height: 1;">7.83B</div>
+<div style="font-size: 11px; color: #64748b; margin-bottom: 2px; font-weight: 600; text-transform: uppercase;">Data: 2020</div>
+<div style="font-size: 14px; font-weight: 500; color: #475569;">Total Population</div>
+</div>
+<div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 16px; border-radius: 8px; display: flex; flex-direction: column; justify-content: center;">
+<div style="font-size: 20px; font-weight: 700; color: #0891b2; margin-bottom: 2px; line-height: 1;">96.0%</div>
+<div style="font-size: 11px; color: #64748b; margin-bottom: 2px; font-weight: 600; text-transform: uppercase;">Data: 2020</div>
+<div style="font-size: 14px; font-weight: 500; color: #475569;">Avg Youth Literacy</div>
+</div>
+<div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 16px; border-radius: 8px; display: flex; flex-direction: column; justify-content: center;">
+<div style="font-size: 20px; font-weight: 700; color: #059669; margin-bottom: 2px; line-height: 1;">72.4yr</div>
+<div style="font-size: 11px; color: #64748b; margin-bottom: 2px; font-weight: 600; text-transform: uppercase;">Data: 2020</div>
+<div style="font-size: 14px; font-weight: 500; color: #475569;">Avg Life Expectancy</div>
+</div>
+<div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 16px; border-radius: 8px; display: flex; flex-direction: column; justify-content: center;">
+<div style="font-size: 20px; font-weight: 700; color: #d97706; margin-bottom: 2px; line-height: 1;">$15,972</div>
+<div style="font-size: 11px; color: #64748b; margin-bottom: 2px; font-weight: 600; text-transform: uppercase;">Data: 2020</div>
+<div style="font-size: 14px; font-weight: 500; color: #475569;">Avg GDP/Capita</div>
+</div>
+<div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 16px; border-radius: 8px; display: flex; flex-direction: column; justify-content: center;">
+<div style="font-size: 20px; font-weight: 700; color: #ea580c; margin-bottom: 2px; line-height: 1;">75.8%</div>
+<div style="font-size: 11px; color: #64748b; margin-bottom: 2px; font-weight: 600; text-transform: uppercase;">Data: 2020</div>
+<div style="font-size: 14px; font-weight: 500; color: #475569;">Avg Water Access</div>
+</div>
+</div>
+<div style="background-color: #fff1f2; border: 1px solid #fecdd3; padding: 12px 16px; border-radius: 8px; display: flex; align-items: center; gap: 10px;">
+<div style="font-size: 14px; font-weight: 600; color: #e11d48; letter-spacing: 0.02em;">LARGEST GENDER GAP</div>
+<div style="font-size: 18px; font-weight: 700; color: #be123c; margin-left: 4px;">16.8pp</div>
+<div style="font-size: 14px; color: #4c1d95; font-weight: 500;">in Mali</div>
+</div>
+</div>
+
+
+## 2021 (1 Countries)
+
+<div style="font-family: ui-sans-serif, system-ui, sans-serif; background-color: #ffffff; border: 1px solid #e2e8f0; padding: 16px; border-radius: 12px; margin: 0 auto 30px auto; color: #334155; width: 100%; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);">
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+<div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 16px; border-radius: 8px; display: flex; flex-direction: column; justify-content: center;">
+<div style="font-size: 20px; font-weight: 700; color: #0891b2; margin-bottom: 2px; line-height: 1;">1</div>
+<div style="font-size: 11px; color: #64748b; margin-bottom: 2px; font-weight: 600; text-transform: uppercase;">Data: 2021</div>
+<div style="font-size: 14px; font-weight: 500; color: #475569;">Countries Analyzed</div>
+</div>
+<div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 16px; border-radius: 8px; display: flex; flex-direction: column; justify-content: center;">
+<div style="font-size: 20px; font-weight: 700; color: #0f172a; margin-bottom: 2px; line-height: 1;">7.89B</div>
+<div style="font-size: 11px; color: #64748b; margin-bottom: 2px; font-weight: 600; text-transform: uppercase;">Data: 2021</div>
+<div style="font-size: 14px; font-weight: 500; color: #475569;">Total Population</div>
+</div>
+<div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 16px; border-radius: 8px; display: flex; flex-direction: column; justify-content: center;">
+<div style="font-size: 20px; font-weight: 700; color: #0891b2; margin-bottom: 2px; line-height: 1;">55.9%</div>
+<div style="font-size: 11px; color: #64748b; margin-bottom: 2px; font-weight: 600; text-transform: uppercase;">Data: 2021</div>
+<div style="font-size: 14px; font-weight: 500; color: #475569;">Avg Youth Literacy</div>
+</div>
+<div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 16px; border-radius: 8px; display: flex; flex-direction: column; justify-content: center;">
+<div style="font-size: 20px; font-weight: 700; color: #059669; margin-bottom: 2px; line-height: 1;">71.7yr</div>
+<div style="font-size: 11px; color: #64748b; margin-bottom: 2px; font-weight: 600; text-transform: uppercase;">Data: 2021</div>
+<div style="font-size: 14px; font-weight: 500; color: #475569;">Avg Life Expectancy</div>
+</div>
+<div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 16px; border-radius: 8px; display: flex; flex-direction: column; justify-content: center;">
+<div style="font-size: 20px; font-weight: 700; color: #d97706; margin-bottom: 2px; line-height: 1;">$17,084</div>
+<div style="font-size: 11px; color: #64748b; margin-bottom: 2px; font-weight: 600; text-transform: uppercase;">Data: 2021</div>
+<div style="font-size: 14px; font-weight: 500; color: #475569;">Avg GDP/Capita</div>
+</div>
+<div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 16px; border-radius: 8px; display: flex; flex-direction: column; justify-content: center;">
+<div style="font-size: 20px; font-weight: 700; color: #ea580c; margin-bottom: 2px; line-height: 1;">76.0%</div>
+<div style="font-size: 11px; color: #64748b; margin-bottom: 2px; font-weight: 600; text-transform: uppercase;">Data: 2021</div>
+<div style="font-size: 14px; font-weight: 500; color: #475569;">Avg Water Access</div>
+</div>
+</div>
+<div style="background-color: #fff1f2; border: 1px solid #fecdd3; padding: 12px 16px; border-radius: 8px; display: flex; align-items: center; gap: 10px;">
+<div style="font-size: 14px; font-weight: 600; color: #e11d48; letter-spacing: 0.02em;">LARGEST GENDER GAP</div>
+<div style="font-size: 18px; font-weight: 700; color: #be123c; margin-left: 4px;">29.7pp</div>
+<div style="font-size: 14px; color: #4c1d95; font-weight: 500;">in Afghanistan</div>
+</div>
+</div>
+
+
+## 2022 (0 Countries)
+
+<div style="font-family: ui-sans-serif, system-ui, sans-serif; background-color: #ffffff; border: 1px solid #e2e8f0; padding: 16px; border-radius: 12px; margin: 0 auto 30px auto; color: #334155; width: 100%; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);">
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+<div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 16px; border-radius: 8px; display: flex; flex-direction: column; justify-content: center;">
+<div style="font-size: 20px; font-weight: 700; color: #0891b2; margin-bottom: 2px; line-height: 1;">Data not available</div>
+<div style="font-size: 11px; color: #64748b; margin-bottom: 2px; font-weight: 600; text-transform: uppercase;">Data: 2022</div>
+<div style="font-size: 14px; font-weight: 500; color: #475569;">Countries Analyzed</div>
+</div>
+<div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 16px; border-radius: 8px; display: flex; flex-direction: column; justify-content: center;">
+<div style="font-size: 20px; font-weight: 700; color: #0f172a; margin-bottom: 2px; line-height: 1;">7.96B</div>
+<div style="font-size: 11px; color: #64748b; margin-bottom: 2px; font-weight: 600; text-transform: uppercase;">Data: 2022</div>
+<div style="font-size: 14px; font-weight: 500; color: #475569;">Total Population</div>
+</div>
+<div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 16px; border-radius: 8px; display: flex; flex-direction: column; justify-content: center;">
+<div style="font-size: 20px; font-weight: 700; color: #0891b2; margin-bottom: 2px; line-height: 1;">Data not available</div>
+<div style="font-size: 11px; color: #64748b; margin-bottom: 2px; font-weight: 600; text-transform: uppercase;">Data: 2022</div>
+<div style="font-size: 14px; font-weight: 500; color: #475569;">Avg Youth Literacy</div>
+</div>
+<div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 16px; border-radius: 8px; display: flex; flex-direction: column; justify-content: center;">
+<div style="font-size: 20px; font-weight: 700; color: #059669; margin-bottom: 2px; line-height: 1;">73.0yr</div>
+<div style="font-size: 11px; color: #64748b; margin-bottom: 2px; font-weight: 600; text-transform: uppercase;">Data: 2022</div>
+<div style="font-size: 14px; font-weight: 500; color: #475569;">Avg Life Expectancy</div>
+</div>
+<div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 16px; border-radius: 8px; display: flex; flex-direction: column; justify-content: center;">
+<div style="font-size: 20px; font-weight: 700; color: #d97706; margin-bottom: 2px; line-height: 1;">$17,674</div>
+<div style="font-size: 11px; color: #64748b; margin-bottom: 2px; font-weight: 600; text-transform: uppercase;">Data: 2022</div>
+<div style="font-size: 14px; font-weight: 500; color: #475569;">Avg GDP/Capita</div>
+</div>
+<div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 16px; border-radius: 8px; display: flex; flex-direction: column; justify-content: center;">
+<div style="font-size: 20px; font-weight: 700; color: #ea580c; margin-bottom: 2px; line-height: 1;">76.4%</div>
+<div style="font-size: 11px; color: #64748b; margin-bottom: 2px; font-weight: 600; text-transform: uppercase;">Data: 2022</div>
+<div style="font-size: 14px; font-weight: 500; color: #475569;">Avg Water Access</div>
+</div>
+</div>
+<div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 16px; border-radius: 8px; display: flex; align-items: center; gap: 10px;">
+<div style="font-size: 14px; font-weight: 600; color: #64748b; letter-spacing: 0.02em;">LARGEST GENDER GAP</div>
+<div style="font-size: 18px; font-weight: 700; color: #334155; margin-left: 4px;">Data not available for 2022</div>
+</div>
+</div>
+
+
+## 2023 (0 Countries)
+
+<div style="font-family: ui-sans-serif, system-ui, sans-serif; background-color: #ffffff; border: 1px solid #e2e8f0; padding: 16px; border-radius: 12px; margin: 0 auto 30px auto; color: #334155; width: 100%; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);">
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+<div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 16px; border-radius: 8px; display: flex; flex-direction: column; justify-content: center;">
+<div style="font-size: 20px; font-weight: 700; color: #0891b2; margin-bottom: 2px; line-height: 1;">Data not available</div>
+<div style="font-size: 11px; color: #64748b; margin-bottom: 2px; font-weight: 600; text-transform: uppercase;">Data: 2023</div>
+<div style="font-size: 14px; font-weight: 500; color: #475569;">Countries Analyzed</div>
+</div>
+<div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 16px; border-radius: 8px; display: flex; flex-direction: column; justify-content: center;">
+<div style="font-size: 20px; font-weight: 700; color: #0f172a; margin-bottom: 2px; line-height: 1;">8.04B</div>
+<div style="font-size: 11px; color: #64748b; margin-bottom: 2px; font-weight: 600; text-transform: uppercase;">Data: 2023</div>
+<div style="font-size: 14px; font-weight: 500; color: #475569;">Total Population</div>
+</div>
+<div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 16px; border-radius: 8px; display: flex; flex-direction: column; justify-content: center;">
+<div style="font-size: 20px; font-weight: 700; color: #0891b2; margin-bottom: 2px; line-height: 1;">Data not available</div>
+<div style="font-size: 11px; color: #64748b; margin-bottom: 2px; font-weight: 600; text-transform: uppercase;">Data: 2023</div>
+<div style="font-size: 14px; font-weight: 500; color: #475569;">Avg Youth Literacy</div>
+</div>
+<div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 16px; border-radius: 8px; display: flex; flex-direction: column; justify-content: center;">
+<div style="font-size: 20px; font-weight: 700; color: #059669; margin-bottom: 2px; line-height: 1;">73.7yr</div>
+<div style="font-size: 11px; color: #64748b; margin-bottom: 2px; font-weight: 600; text-transform: uppercase;">Data: 2023</div>
+<div style="font-size: 14px; font-weight: 500; color: #475569;">Avg Life Expectancy</div>
+</div>
+<div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 16px; border-radius: 8px; display: flex; flex-direction: column; justify-content: center;">
+<div style="font-size: 20px; font-weight: 700; color: #d97706; margin-bottom: 2px; line-height: 1;">$17,619</div>
+<div style="font-size: 11px; color: #64748b; margin-bottom: 2px; font-weight: 600; text-transform: uppercase;">Data: 2023</div>
+<div style="font-size: 14px; font-weight: 500; color: #475569;">Avg GDP/Capita</div>
+</div>
+<div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 16px; border-radius: 8px; display: flex; flex-direction: column; justify-content: center;">
+<div style="font-size: 20px; font-weight: 700; color: #ea580c; margin-bottom: 2px; line-height: 1;">76.5%</div>
+<div style="font-size: 11px; color: #64748b; margin-bottom: 2px; font-weight: 600; text-transform: uppercase;">Data: 2023</div>
+<div style="font-size: 14px; font-weight: 500; color: #475569;">Avg Water Access</div>
+</div>
+</div>
+<div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 16px; border-radius: 8px; display: flex; align-items: center; gap: 10px;">
+<div style="font-size: 14px; font-weight: 600; color: #64748b; letter-spacing: 0.02em;">LARGEST GENDER GAP</div>
+<div style="font-size: 18px; font-weight: 700; color: #334155; margin-left: 4px;">Data not available for 2023</div>
+</div>
+</div>
+
+
+## 2024 (0 Countries)
+
+<div style="font-family: ui-sans-serif, system-ui, sans-serif; background-color: #ffffff; border: 1px solid #e2e8f0; padding: 16px; border-radius: 12px; margin: 0 auto 30px auto; color: #334155; width: 100%; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);">
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+<div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 16px; border-radius: 8px; display: flex; flex-direction: column; justify-content: center;">
+<div style="font-size: 20px; font-weight: 700; color: #0891b2; margin-bottom: 2px; line-height: 1;">Data not available</div>
+<div style="font-size: 11px; color: #64748b; margin-bottom: 2px; font-weight: 600; text-transform: uppercase;">Data: 2024</div>
+<div style="font-size: 14px; font-weight: 500; color: #475569;">Countries Analyzed</div>
+</div>
+<div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 16px; border-radius: 8px; display: flex; flex-direction: column; justify-content: center;">
+<div style="font-size: 20px; font-weight: 700; color: #0f172a; margin-bottom: 2px; line-height: 1;">8.11B</div>
+<div style="font-size: 11px; color: #64748b; margin-bottom: 2px; font-weight: 600; text-transform: uppercase;">Data: 2024</div>
+<div style="font-size: 14px; font-weight: 500; color: #475569;">Total Population</div>
+</div>
+<div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 16px; border-radius: 8px; display: flex; flex-direction: column; justify-content: center;">
+<div style="font-size: 20px; font-weight: 700; color: #0891b2; margin-bottom: 2px; line-height: 1;">Data not available</div>
+<div style="font-size: 11px; color: #64748b; margin-bottom: 2px; font-weight: 600; text-transform: uppercase;">Data: 2024</div>
+<div style="font-size: 14px; font-weight: 500; color: #475569;">Avg Youth Literacy</div>
+</div>
+<div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 16px; border-radius: 8px; display: flex; flex-direction: column; justify-content: center;">
+<div style="font-size: 20px; font-weight: 700; color: #059669; margin-bottom: 2px; line-height: 1;">Data not available</div>
+<div style="font-size: 11px; color: #64748b; margin-bottom: 2px; font-weight: 600; text-transform: uppercase;">Data: 2024</div>
+<div style="font-size: 14px; font-weight: 500; color: #475569;">Avg Life Expectancy</div>
+</div>
+<div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 16px; border-radius: 8px; display: flex; flex-direction: column; justify-content: center;">
+<div style="font-size: 20px; font-weight: 700; color: #d97706; margin-bottom: 2px; line-height: 1;">$17,701</div>
+<div style="font-size: 11px; color: #64748b; margin-bottom: 2px; font-weight: 600; text-transform: uppercase;">Data: 2024</div>
+<div style="font-size: 14px; font-weight: 500; color: #475569;">Avg GDP/Capita</div>
+</div>
+<div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 16px; border-radius: 8px; display: flex; flex-direction: column; justify-content: center;">
+<div style="font-size: 20px; font-weight: 700; color: #ea580c; margin-bottom: 2px; line-height: 1;">76.6%</div>
+<div style="font-size: 11px; color: #64748b; margin-bottom: 2px; font-weight: 600; text-transform: uppercase;">Data: 2024</div>
+<div style="font-size: 14px; font-weight: 500; color: #475569;">Avg Water Access</div>
+</div>
+</div>
+<div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 16px; border-radius: 8px; display: flex; align-items: center; gap: 10px;">
+<div style="font-size: 14px; font-weight: 600; color: #64748b; letter-spacing: 0.02em;">LARGEST GENDER GAP</div>
+<div style="font-size: 18px; font-weight: 700; color: #334155; margin-left: 4px;">Data not available for 2024</div>
+</div>
+</div>
+
+:::
+
 """
-display(HTML(html_content))
+display(Markdown(data_block1))
 ```
 
 ::: {style="background-color: #F0F9FF; padding: 25px; border-radius: 15px; margin-bottom: 35px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);"}
 
-## Visualisation 1 — World Map: Youth Literacy by Country {#sec-map}
+## Visualisation 1 - World Map: Youth Literacy by Country {#sec-map}
 
 At a global scale, the disparity in fundamental educational access becomes immediately visible. Through this choropleth map, we observe a sharp geographic divide. While the Global North, South America, and much of Asia exhibit profound literacy saturation (displayed in rich greens), substantial portions of Sub-Saharan Africa and isolated regions in South Asia remain critically underserved, shown in stark reds. It becomes evident that geographic location, persistent geopolitical instability, and resource scarcity continue to heavily dictate a child's right to foundational education.
 
 ```{python}
-#| label: fig-world-map
-#| fig-cap: "World Map — Youth Literacy Rates by Country"
-#| fig-width: 5
-#| fig-height: 5
-#| echo: true
-#| warning: false
-#| message: false
+#| label: plot-map
 #| code-fold: true
-#| code-summary: "Generate World Map Visualization"
-
-import geopandas as gpd
-import math
-
-world = gpd.read_file("https://naciscdn.org/naturalearth/110m/cultural/ne_110m_admin_0_countries.zip")[["ISO_A3", "geometry", "NAME"]].rename(columns={"ISO_A3": "iso_a3"})
-literacy_dict = dict(zip(t_latest[alpha_col].to_list(), t_latest["obs_value"].to_list()))
-world["obs_value"] = [literacy_dict.get(code, math.nan) for code in world["iso_a3"]]
-
+#| eval: false
+# The following Phase 1 Colab snippet generated this visualization natively
 p1 = (
     ggplot(world) 
     + geom_map(aes(fill="obs_value"), color="white", size=0.1) 
-    + scale_fill_gradient(low="#EF4444", high="#22C55E", na_value="#374151", name="Literacy Rate (%)") 
-    + labs(title="Youth Literacy Rates Across the World", subtitle="Latest available data per country")
+    + scale_fill_gradient(low="#EF4444", high="#22C55E", na_value="#374151") 
     + theme_void()
-    + theme(plot_title=element_text(size=14, weight="bold"))
 )
-p1
 ```
+![Youth Literacy Rates Across the World](vis1_map.png){#fig-map width=5in height=5in fig-align="center"}
 
 <br>
 
 ```{python}
-#| label: tbl-map-extremes
-#| tbl-cap: "Literacy Extremes: Top 5 and Bottom 5"
-#| echo: true
-#| warning: false
-#| message: false
+#| label: section-map
 #| code-fold: true
-#| code-summary: "Compute Regional Map Details"
-#| results: asis
+#| output: asis
+#| eval: true
+# This block prints the native Phase 1 Map Extremes explicitly
+data_block2 = r"""
 
-from IPython.display import Markdown, display
+::: {.panel-tabset}
 
-# Native Polars extraction for the extremes
-top5_map = t_latest.sort("obs_value", descending=True).head(5)
-bottom5_map = t_latest.sort("obs_value").head(5)
+## 2019 (19 Countries)
 
-md = "### Highest Literacy (Top 5)\n\n"
-md += "| Country | Record Year | Youth Literacy Rate (%) |\n"
-md += "|:---|:---:|---:|\n"
-for r in top5_map.iter_rows(named=True):
-    md += f"| **{r[country_col]}** | {r[year_col]} | {r['obs_value']:.1f}% |\n"
+### Highest Literacy (Top 5)
 
-md += "\n<br>\n\n"
+| Country | Record Year | Youth Literacy Rate (%) |
+|:---|:---:|---:|
+| **Uzbekistan** | 2019 | 100.0% |
+| **Serbia** | 2019 | 100.0% |
+| **Azerbaijan** | 2019 | 99.9% |
+| **Turkey** | 2019 | 99.9% |
+| **Italy** | 2019 | 99.9% |
 
-md += "### Critical Literacy Deficit (Bottom 5)\n\n"
-md += "| Country | Record Year | Youth Literacy Rate (%) |\n"
-md += "|:---|:---:|---:|\n"
-for r in bottom5_map.iter_rows(named=True):
-    md += f"| **{r[country_col]}** | {r[year_col]} | {r['obs_value']:.1f}% |\n"
+<br>
 
-display(Markdown(md))
+### Critical Literacy Deficit (Bottom 5)
+
+| Country | Record Year | Youth Literacy Rate (%) |
+|:---|:---:|---:|
+| **Pakistan** | 2019 | 72.7% |
+| **Ivory Coast** | 2019 | 83.6% |
+| **Togo** | 2019 | 87.9% |
+| **Myanmar** | 2019 | 95.4% |
+| **Honduras** | 2019 | 96.1% |
+
+
+## 2018 (53 Countries)
+
+### Highest Literacy (Top 5)
+
+| Country | Record Year | Youth Literacy Rate (%) |
+|:---|:---:|---:|
+| **Kazakhstan** | 2018 | 99.9% |
+| **Latvia** | 2018 | 99.8% |
+| **China** | 2018 | 99.8% |
+| **Lebanon** | 2018 | 99.8% |
+| **Kyrgyzstan** | 2018 | 99.8% |
+
+<br>
+
+### Critical Literacy Deficit (Bottom 5)
+
+| Country | Record Year | Youth Literacy Rate (%) |
+|:---|:---:|---:|
+| **Central African Republic** | 2018 | 38.3% |
+| **Niger** | 2018 | 43.5% |
+| **South Sudan** | 2018 | 47.9% |
+| **Guinea** | 2018 | 53.9% |
+| **Burkina Faso** | 2018 | 58.9% |
+
+
+## 2020 (18 Countries)
+
+### Highest Literacy (Top 5)
+
+| Country | Record Year | Youth Literacy Rate (%) |
+|:---|:---:|---:|
+| **Armenia** | 2020 | 99.9% |
+| **Indonesia** | 2020 | 99.8% |
+| **Singapore** | 2020 | 99.7% |
+| **Spain** | 2020 | 99.6% |
+| **Bolivia** | 2020 | 99.6% |
+
+<br>
+
+### Critical Literacy Deficit (Bottom 5)
+
+| Country | Record Year | Youth Literacy Rate (%) |
+|:---|:---:|---:|
+| **Mali** | 2020 | 46.2% |
+| **Bangladesh** | 2020 | 94.5% |
+| **El Salvador** | 2020 | 98.5% |
+| **Paraguay** | 2020 | 98.6% |
+| **Ecuador** | 2020 | 98.8% |
+
+:::
+
+
+"""
+display(Markdown(data_block2))
 ```
 
 :::
@@ -267,72 +427,126 @@ display(Markdown(md))
 
 ::: {style="background-color: #FFF1F2; padding: 25px; border-radius: 15px; margin-bottom: 35px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);"}
 
-## Visualisation 2 — Bar Chart: Bottom 10 Literacy Nations {#sec-bar}
+## Visualisation 2 - Bar Chart: Bottom 10 Literacy Nations {#sec-bar}
 
 While global averages routinely champion worldwide advancement, drilling down into the bottom 10 nations exposes profound ongoing regional crises. Predominantly located across West and Central Africa—as well as Afghanistan—these severely struggling nations face immense structural barriers. With youth literacy rates plummeting below 40% in the most severe cases, the data signifies systemic failures often exacerbated by ongoing conflict, deep-rooted poverty, or an acute lack of enduring educational infrastructure. Achieving global educational parity means first confronting the urgent humanitarian crisis happening within these specific borders.
 
 ```{python}
-#| label: fig-bar-bottom10
-#| fig-cap: "Bottom 10 Countries by Youth Literacy Rate"
-#| fig-width: 5
-#| fig-height: 5
-#| echo: true
-#| warning: false
-#| message: false
+#| label: plot-bar
 #| code-fold: true
-#| code-summary: "Generate Regional Bar Visualization"
-
-bottom10 = t_latest.sort("obs_value").head(10).with_columns(pl.col(country_col).cast(pl.Categorical).alias("country_cat"))
+#| eval: false
+# Bottom 10 visualization logic originally executed securely in Phase 1
 p2 = (
     ggplot(bottom10, aes(x=f"reorder({country_col}, obs_value)", y="obs_value")) 
-    + geom_bar(stat="identity", fill="#EF4444", width=0.7) 
-    + geom_text(aes(label="obs_value"), format_string="{:.1f}%", ha="left", nudge_y=1, size=8, color="#991B1B")
+    + geom_bar(stat="identity", fill="#EF4444") 
     + coord_flip() 
-    + labs(title="Bottom 10 — Youth Literacy Crisis Nations", x="", y="Literacy Rate (%)")
-    + theme_minimal()
-    + theme(plot_title=element_text(size=14, weight="bold"))
 )
-p2
 ```
+!["Bottom 10 — Youth Literacy Crisis Nations"](vis2_bar.png){#fig-bar width=5in height=5in fig-align="center"}
 
 <br>
 
 ```{python}
-#| label: tbl-bar-stories
-#| tbl-cap: "Regional Outliers: The Good Story vs The Bad Story"
-#| echo: true
-#| warning: false
-#| message: false
+#| label: section-bar
 #| code-fold: true
-#| code-summary: "Get the information to write the story and explain the visualization"
-#| results: asis
+#| output: asis
+#| eval: true
+# This block prints the narrative stories directly from Phase 1 strings
+data_block3 = r"""
 
-from IPython.display import Markdown, display
+::: {.panel-tabset}
 
-top5 = t_latest.sort("obs_value", descending=True).head(5)
-bottom5 = t_latest.sort("obs_value").head(5)
+## 2019 (19 Countries)
 
-md = ""
+::: {.callout-tip}
+## The Good Story
+These five nations represent the absolute peak of educational access recorded in the UNICEF database, achieving literally perfect recorded youth literacy. They stand as statistical testaments to robust educational systems, highly structured socio-economic public policies, and unwavering government investments into early childhood infrastructures.
 
-md += "::: {.callout-tip}\n"
-md += "## The Good Story\n"
-md += "These five nations represent the absolute peak of educational access recorded in the UNICEF database, achieving literally perfect recorded youth literacy. They stand as statistical testaments to robust educational systems, highly structured socio-economic public policies, and unwavering government investments into early childhood infrastructures.\n\n"
-md += "| Country | Record Year | Literacy Rate (%) |\n"
-md += "|:---|:---:|---:|\n"
-for r in top5.iter_rows(named=True):
-    md += f"| **{r[country_col]}** | {r[year_col]} | {r['obs_value']:.1f}% |\n"
-md += ":::\n\n"
+| Country | Record Year | Literacy Rate (%) |
+|:---|:---:|---:|
+| **Uzbekistan** | 2019 | 100.0% |
+| **Serbia** | 2019 | 100.0% |
+| **Azerbaijan** | 2019 | 99.9% |
+| **Turkey** | 2019 | 99.9% |
+| **Italy** | 2019 | 99.9% |
+:::
 
-md += "::: {.callout-important}\n"
-md += "## The Bad Story\n"
-md += "Conversely, these five extreme outliers sit at the painful epicenter of the global educational crisis. Ravaged heavily by deep-set multidimensional poverty, geographic isolation, and severe regional instability, the vast majority of their youth systematically lack access to foundational learning. Their ongoing humanitarian struggle physically darkens the overarching global map.\n\n"
-md += "| Country | Record Year | Literacy Rate (%) |\n"
-md += "|:---|:---:|---:|\n"
-for r in bottom5.iter_rows(named=True):
-    md += f"| **{r[country_col]}** | {r[year_col]} | {r['obs_value']:.1f}% |\n"
-md += ":::\n"
+::: {.callout-important}
+## The Bad Story
+Conversely, these five extreme outliers sit at the painful epicenter of the global educational crisis. Ravaged heavily by deep-set multidimensional poverty, geographic isolation, and severe regional instability, the vast majority of their youth systematically lack access to foundational learning. Their ongoing humanitarian struggle physically darkens the overarching global map.
 
-display(Markdown(md))
+| Country | Record Year | Literacy Rate (%) |
+|:---|:---:|---:|
+| **Pakistan** | 2019 | 72.7% |
+| **Ivory Coast** | 2019 | 83.6% |
+| **Togo** | 2019 | 87.9% |
+| **Myanmar** | 2019 | 95.4% |
+| **Honduras** | 2019 | 96.1% |
+:::
+
+
+## 2018 (53 Countries)
+
+::: {.callout-tip}
+## The Good Story
+These five nations represent the absolute peak of educational access recorded in the UNICEF database, achieving literally perfect recorded youth literacy. They stand as statistical testaments to robust educational systems, highly structured socio-economic public policies, and unwavering government investments into early childhood infrastructures.
+
+| Country | Record Year | Literacy Rate (%) |
+|:---|:---:|---:|
+| **Kazakhstan** | 2018 | 99.9% |
+| **Latvia** | 2018 | 99.8% |
+| **China** | 2018 | 99.8% |
+| **Lebanon** | 2018 | 99.8% |
+| **Kyrgyzstan** | 2018 | 99.8% |
+:::
+
+::: {.callout-important}
+## The Bad Story
+Conversely, these five extreme outliers sit at the painful epicenter of the global educational crisis. Ravaged heavily by deep-set multidimensional poverty, geographic isolation, and severe regional instability, the vast majority of their youth systematically lack access to foundational learning. Their ongoing humanitarian struggle physically darkens the overarching global map.
+
+| Country | Record Year | Literacy Rate (%) |
+|:---|:---:|---:|
+| **Central African Republic** | 2018 | 38.3% |
+| **Niger** | 2018 | 43.5% |
+| **South Sudan** | 2018 | 47.9% |
+| **Guinea** | 2018 | 53.9% |
+| **Burkina Faso** | 2018 | 58.9% |
+:::
+
+
+## 2020 (18 Countries)
+
+::: {.callout-tip}
+## The Good Story
+These five nations represent the absolute peak of educational access recorded in the UNICEF database, achieving literally perfect recorded youth literacy. They stand as statistical testaments to robust educational systems, highly structured socio-economic public policies, and unwavering government investments into early childhood infrastructures.
+
+| Country | Record Year | Literacy Rate (%) |
+|:---|:---:|---:|
+| **Armenia** | 2020 | 99.9% |
+| **Indonesia** | 2020 | 99.8% |
+| **Singapore** | 2020 | 99.7% |
+| **Spain** | 2020 | 99.6% |
+| **Bolivia** | 2020 | 99.6% |
+:::
+
+::: {.callout-important}
+## The Bad Story
+Conversely, these five extreme outliers sit at the painful epicenter of the global educational crisis. Ravaged heavily by deep-set multidimensional poverty, geographic isolation, and severe regional instability, the vast majority of their youth systematically lack access to foundational learning. Their ongoing humanitarian struggle physically darkens the overarching global map.
+
+| Country | Record Year | Literacy Rate (%) |
+|:---|:---:|---:|
+| **Mali** | 2020 | 46.2% |
+| **Bangladesh** | 2020 | 94.5% |
+| **El Salvador** | 2020 | 98.5% |
+| **Paraguay** | 2020 | 98.6% |
+| **Ecuador** | 2020 | 98.8% |
+:::
+
+:::
+
+
+"""
+display(Markdown(data_block3))
 ```
 
 :::
@@ -340,77 +554,105 @@ display(Markdown(md))
 
 ::: {style="background-color: #F0FDF4; padding: 25px; border-radius: 15px; margin-bottom: 35px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);"}
 
-## Visualisation 3 — Scatter Plot: Literacy vs GDP with Regression {#sec-scatter}
+## Visualisation 3 - Scatter Plot: Literacy vs GDP with Regression {#sec-scatter}
 
 Does national wealth guarantee a literate youth? By plotting literacy rates against GDP per capita on a logarithmic scale, an undeniable, positive correlation emerges. The Ordinary Least Squares (OLS) regression highlights a steep initial climb: as economies transition upward from extreme poverty toward developing status (under $10k GDP per capita), literacy rates surge dramatically. However, the curve eventually plateaus near 100%—demonstrating that while basal economic funding is absolutely essential for establishing schools and stability, achieving final total literacy requires targeted socio-cultural policy rather than just infinite gross national wealth.
 
 ```{python}
-#| label: fig-scatter-regression
-#| fig-cap: "Youth Literacy vs GDP per Capita (Log Scale) with OLS Regression Line"
-#| fig-width: 5
-#| fig-height: 5
-#| echo: true
-#| warning: false
-#| message: false
+#| label: plot-scatter
 #| code-fold: true
-#| code-summary: "Generate GDP Scatterplot & Regression"
-
-meta_clean = (
-    metadata_df
-    .with_columns([
-        pl.col(m_year).cast(pl.Int64, strict=False),
-        pl.col(m_gdp).cast(pl.Float64, strict=False),
-        pl.col(m_pop).cast(pl.Float64, strict=False),
-    ])
-    .drop_nulls(subset=[m_year, m_gdp, m_pop])
-    .sort(m_year)
-    .group_by(meta_alpha)
-    .last()
-    .select([pl.col(meta_alpha).alias(alpha_col), pl.col(m_gdp), pl.col(m_pop)])
-)
-
-scatter_df = t_latest.join(meta_clean, on=alpha_col, how="inner").drop_nulls(subset=["obs_value", m_gdp]).filter(pl.col(m_gdp) > 0)
-scatter_df = scatter_df.with_columns(pl.struct([country_col, year_col, "obs_value", m_gdp, m_pop]).map_elements(lambda r: f"{r[country_col]}\\n{r['obs_value']:.1f}%" if (r["obs_value"] < 55) or (r[m_gdp] > 70000) or (r[m_pop] > 2e8) else "", return_dtype=pl.Utf8).alias("label"))
-
+#| eval: false
+# Economic scatter plot generated structurally from Phase 1 engine
 p3 = (
     ggplot(scatter_df, aes(x=m_gdp, y="obs_value"))
-    + geom_point(aes(size=m_pop), alpha=0.6, color="#3B82F6", fill="#93C5FD", stroke=0.3)
-    + geom_smooth(method="lm", color="#EF4444", linetype="dashed", se=True, alpha=0.15)
-    + geom_text(aes(label="label"), size=7, color="#0F172A", nudge_y=3.5)
-    + scale_x_log10(labels=lambda lst: [f"${v/1000:.0f}k" if v >= 1000 else f"${v:.0f}" for v in lst])
-    + labs(title="Literacy vs Economic Development", x="GDP per Capita (USD, log)", y="Literacy (%)")
-    + theme_minimal()
-    + theme(legend_position="none")
+    + geom_point()
+    + geom_smooth(method="lm")
+    + scale_x_log10()
 )
-p3
 ```
+![Literacy vs Economic Development](vis3_scatter.png){#fig-scatter width=5in height=5in fig-align="center"}
 
 To ground this overarching trend observation, let us examine the raw data defining the top 15 wealthiest nations in our matched dataset. As the table below reveals, once a country crosses the upper-income threshold, their infrastructure fundamentally guarantees near-perfect youth literacy (locking comfortably between 98.8% to 100%), reinforcing the reality that total economic stability effectively eliminates baseline childhood illiteracy.
 
 <br>
 
 ```{python}
-#| label: tbl-top15-gdp
-#| tbl-cap: "The Wealth Factor: Top 15 Nations by GDP per Capita"
-#| echo: true
-#| warning: false
-#| message: false
+#| label: section-scatter
 #| code-fold: true
-#| code-summary: "Evaluate Wealth Bracket Extraction"
-#| results: asis
+#| output: asis
+#| eval: true
+# This block prints the Top GDP Wealth Bracket dynamically
+data_block4 = r"""
 
-from IPython.display import Markdown, display
+::: {.panel-tabset}
 
-# Extract the Top 15 by descending GDP natively in Polars
-top15 = scatter_df.sort(m_gdp, descending=True).head(15)
+## 2019 (19 Countries)
 
-md = "### The Wealth Bracket (Top 15 Economies)\n\n"
-md += "| Country | Record Year | GDP per Capita (USD) | Youth Literacy Rate (%) |\n"
-md += "|:---|:---:|---:|---:|\n"
-for r in top15.iter_rows(named=True):
-    md += f"| **{r[country_col]}** | {r[year_col]} | **${r[m_gdp]:,.0f}** | {r['obs_value']:.1f}% |\n"
+| Country | Record Year | GDP per Capita (USD) | Total Population | Youth Literacy (%) |
+|:---|:---:|---:|---:|---:|
+| **United Arab Emirates** | 2019 | $43,468 | 9,445,785 | 96.3% |
+| **Italy** | 2019 | $32,180 | 59,729,081 | 99.9% |
+| **Uruguay** | 2019 | $17,758 | 3,397,206 | 99.0% |
+| **Panama** | 2019 | $15,603 | 4,234,700 | 98.9% |
+| **Turkey** | 2019 | $12,238 | 82,579,440 | 99.9% |
+| **Malaysia** | 2019 | $10,903 | 33,440,596 | 96.8% |
+| **Serbia** | 2019 | $6,871 | 6,945,235 | 100.0% |
+| **Belarus** | 2019 | $6,268 | 9,419,758 | 99.9% |
+| **South Africa** | 2019 | $6,033 | 59,587,885 | 98.4% |
+| **Azerbaijan** | 2019 | $5,347 | 10,024,283 | 99.9% |
+| **Georgia** | 2019 | $4,976 | 3,720,161 | 99.7% |
+| **Philippines** | 2019 | $3,576 | 110,804,683 | 98.4% |
+| **Uzbekistan** | 2019 | $3,259 | 32,964,701 | 100.0% |
+| **Viet Nam** | 2019 | $3,241 | 97,173,776 | 98.6% |
+| **Honduras** | 2019 | $2,448 | 9,943,633 | 96.1% |
 
-display(Markdown(md))
+
+## 2018 (53 Countries)
+
+| Country | Record Year | GDP per Capita (USD) | Total Population | Youth Literacy (%) |
+|:---|:---:|---:|---:|---:|
+| **Malta** | 2018 | $29,537 | 483,903 | 99.3% |
+| **Brunei Darussalam** | 2018 | $29,200 | 437,810 | 99.7% |
+| **Portugal** | 2018 | $20,998 | 10,283,822 | 99.7% |
+| **Greece** | 2018 | $18,769 | 10,732,882 | 99.2% |
+| **Seychelles** | 2018 | $18,628 | 96,762 | 99.1% |
+| **Oman** | 2018 | $18,270 | 4,597,877 | 98.6% |
+| **Latvia** | 2018 | $15,120 | 1,927,174 | 99.8% |
+| **Argentina** | 2018 | $13,058 | 44,654,882 | 99.5% |
+| **Costa Rica** | 2018 | $12,680 | 4,957,818 | 99.4% |
+| **Romania** | 2018 | $10,714 | 19,473,970 | 99.4% |
+| **Kazakhstan** | 2018 | $10,670 | 18,932,727 | 99.9% |
+| **China** | 2018 | $9,799 | 1,402,760,000 | 99.8% |
+| **Russia** | 2018 | $9,675 | 145,398,106 | 99.7% |
+| **Brazil** | 2018 | $8,722 | 206,107,261 | 99.2% |
+| **Suriname** | 2018 | $8,667 | 599,513 | 98.6% |
+
+
+## 2020 (18 Countries)
+
+| Country | Record Year | GDP per Capita (USD) | Total Population | Youth Literacy (%) |
+|:---|:---:|---:|---:|---:|
+| **Singapore** | 2020 | $59,190 | 5,685,807 | 99.7% |
+| **Kuwait** | 2020 | $25,542 | 4,400,267 | 99.3% |
+| **Spain** | 2020 | $25,077 | 47,359,424 | 99.6% |
+| **Saudi Arabia** | 2020 | $22,828 | 31,552,510 | 99.5% |
+| **Mexico** | 2020 | $9,235 | 126,799,054 | 99.1% |
+| **Paraguay** | 2020 | $6,109 | 6,603,739 | 98.6% |
+| **Colombia** | 2020 | $5,892 | 50,629,997 | 99.0% |
+| **Peru** | 2020 | $5,832 | 32,838,579 | 99.4% |
+| **Ecuador** | 2020 | $5,356 | 17,546,065 | 98.8% |
+| **Sri Lanka** | 2020 | $4,227 | 21,919,000 | 98.9% |
+| **Mongolia** | 2020 | $4,066 | 3,327,204 | 99.1% |
+| **Armenia** | 2020 | $4,032 | 2,961,500 | 99.9% |
+| **El Salvador** | 2020 | $3,809 | 6,234,673 | 98.5% |
+| **Indonesia** | 2020 | $3,739 | 274,814,866 | 99.8% |
+| **Palestinian Territory, Occupied** | 2020 | $2,922 | 4,803,269 | 99.2% |
+
+:::
+
+
+"""
+display(Markdown(data_block4))
 ```
 
 :::
@@ -418,70 +660,125 @@ display(Markdown(md))
 
 ::: {style="background-color: #FFFBEB; padding: 25px; border-radius: 15px; margin-bottom: 35px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);"}
 
-## Visualisation 4 — Time-Series: Global Water Access Trend {#sec-timeseries}
+## Visualisation 4 - Time-Series: Global Water Access Trend {#sec-timeseries}
 
-Educational infrastructure cannot exist in a vacuum; human survivability metrics form the bedrock of community stability. This time-series explores the global progression of minimum basic water security over the last two decades. The smoothed LOESS trendline showcases a persistent, encouraging upward trajectory, reflecting the massive success of global humanitarian programs to build wells and sanitisation systems. Yet, the remaining percentage gap preventing 100% saturation represents populations explicitly anchored in survival mode—where millions of youths, particularly young girls, are often tasked with extensive daily basic resource gathering rather than attending their local schools.
+Educational infrastructure cannot exist in a vacuum; human survivability metrics form the bedrock of community stability. This time-series explores the global progression of minimum basic water security over the last two decades. The smoothed LOESS trendline showcases a persistent, encouraging upward trajectory, reflecting the massive success of global humanitarian programs to build wells and sanitisation systems. Yet, the remaining percentage gap preventing 100% saturation represents populations explicitly anchored in survival mode-where millions of youths, particularly young girls, are often tasked with extensive daily basic resource gathering rather than attending their local schools.
 
 ```{python}
-#| label: fig-timeseries-water
-#| fig-cap: "Global Average Basic Water Access Over Time"
-#| fig-width: 5
-#| fig-height: 5
-#| echo: true
-#| warning: false
-#| message: false
+#| label: plot-timeseries
 #| code-fold: true
-#| code-summary: "Generate Time-Series Visualization"
-
-water_ts = water_df.with_columns(pl.col(w_year_col).cast(pl.Int64, strict=False).alias("year")).drop_nulls(subset=["year", "obs_value"]).group_by("year").agg(pl.col("obs_value").mean().alias("avg_water")).sort("year")
-
+#| eval: false
+# Time-series global progression mapped directly via Phase 1 Polars output
 p4 = (
     ggplot(water_ts, aes(x="year", y="avg_water"))
-    + geom_area(fill="#06B6D4", alpha=0.2)
-    + geom_line(color="#06B6D4", size=1.2)
-    + geom_point(color="#0E7490", size=2.5, alpha=0.8)
-    + geom_smooth(method="loess", color="#0891B2", linetype="dashed", se=False, span=0.4)
-    + labs(title="Global Water Access Trend", x="Year", y="Basic Water Access (%)")
-    + theme_minimal()
+    + geom_line()
+    + geom_smooth(method="loess")
 )
-p4
 ```
+![Global Average Basic Water Access Over Time](vis4_timeseries.png){#fig-timeseries width=5in height=5in fig-align="center"}
 
 <br>
 
 ```{python}
-#| label: tbl-water-extremes
-#| tbl-cap: "Water Access Extremes: Top 5 and Bottom 5"
-#| echo: true
-#| warning: false
-#| message: false
+#| label: section-water
 #| code-fold: true
-#| code-summary: "Compute Time-Series Table Extraction"
-#| results: asis
+#| output: asis
+#| eval: true
+# This block natively prints the Water Access Extremes tables
+data_block5 = r"""
 
-from IPython.display import Markdown, display
+::: {.panel-tabset}
 
-w_latest = water_df.sort(w_year_col).group_by(alpha_col).last().drop_nulls(subset=["obs_value"]).join(t_latest.select([alpha_col, country_col]), on=alpha_col, how="left")
-top5_w = w_latest.sort("obs_value", descending=True).head(5)
-bottom5_w = w_latest.sort("obs_value").head(5)
+## 2019 (19 Countries)
 
-md = "### Universal Water Access (Top 5)\n\n"
-md += "| Country | Record Year | Basic Water Access (%) |\n"
-md += "|:---|:---:|---:|\n"
-for r in top5_w.iter_rows(named=True):
-    c_name = r[country_col] if r.get(country_col) else r[alpha_col]
-    md += f"| **{c_name}** | {r[w_year_col]} | {r['obs_value']:.1f}% |\n"
+::: {.callout-tip}
+## Universal Water Access (Top 5)
+These nations have achieved 100% basic water access for their populations, ensuring a critical foundation for health and education.
 
-md += "\n<br>\n\n"
+| Country | Record Year | Basic Water Access (%) |
+|:---|:---:|---:|
+| **Kuwait** | 2019 | 100.0% |
+| **Liechtenstein** | 2019 | 100.0% |
+| **Monaco** | 2019 | 100.0% |
+| **Macao** | 2019 | 100.0% |
+| **Hong Kong** | 2019 | 100.0% |
+:::
 
-md += "### Critical Water Insecurity (Bottom 5)\n\n"
-md += "| Country | Record Year | Basic Water Access (%) |\n"
-md += "|:---|:---:|---:|\n"
-for r in bottom5_w.iter_rows(named=True):
-    c_name = r[country_col] if r.get(country_col) else r[alpha_col]
-    md += f"| **{c_name}** | {r[w_year_col]} | {r['obs_value']:.1f}% |\n"
+::: {.callout-important}
+## Critical Water Insecurity (Bottom 5)
+In contrast, these regions face severe water scarcity, with access rates as low as 8.5%, forcing youth into resource-gathering roles rather than schooling.
 
-display(Markdown(md))
+| Country | Record Year | Basic Water Access (%) |
+|:---|:---:|---:|
+| **Tuvalu** | 2019 | 8.5% |
+| **Sierra Leone** | 2019 | 10.2% |
+| **Chad** | 2019 | 13.2% |
+| **Kiribati** | 2019 | 14.1% |
+| **Ethiopia** | 2019 | 14.5% |
+:::
+
+
+## 2018 (53 Countries)
+
+::: {.callout-tip}
+## Universal Water Access (Top 5)
+Perfect saturation of water resources across diverse geographic regions from small city-states to established nations.
+
+| Country | Record Year | Basic Water Access (%) |
+|:---|:---:|---:|
+| **Kuwait** | 2018 | 100.0% |
+| **Monaco** | 2018 | 100.0% |
+| **Singapore** | 2018 | 100.0% |
+| **San Marino** | 2018 | 100.0% |
+| **Liechtenstein** | 2018 | 100.0% |
+:::
+
+::: {.callout-important}
+## Critical Water Insecurity (Bottom 5)
+Systemic water access issues continue to plague these nations, significantly hindering progress toward SDG 6 and educational parity.
+
+| Country | Record Year | Basic Water Access (%) |
+|:---|:---:|---:|
+| **Tuvalu** | 2018 | 8.5% |
+| **Sierra Leone** | 2018 | 10.0% |
+| **Chad** | 2018 | 13.1% |
+| **Kiribati** | 2018 | 13.8% |
+| **Ethiopia** | 2018 | 14.1% |
+:::
+
+
+## 2020 (18 Countries)
+
+::: {.callout-tip}
+## Universal Water Access (Top 5)
+Maintaining perfect water infrastructure even amidst global challenges, securing public health foundations.
+
+| Country | Record Year | Basic Water Access (%) |
+|:---|:---:|---:|
+| **Gibraltar** | 2020 | 100.0% |
+| **Macao** | 2020 | 100.0% |
+| **San Marino** | 2020 | 100.0% |
+| **Liechtenstein** | 2020 | 100.0% |
+| **Denmark** | 2020 | 100.0% |
+:::
+
+::: {.callout-important}
+## Critical Water Insecurity (Bottom 5)
+These nations remain at the absolute floor of global water security, indicating a desperate need for targeted international infrastructure investment.
+
+| Country | Record Year | Basic Water Access (%) |
+|:---|:---:|---:|
+| **Tuvalu** | 2020 | 8.6% |
+| **Sierra Leone** | 2020 | 10.4% |
+| **Chad** | 2020 | 13.4% |
+| **Kiribati** | 2020 | 14.3% |
+| **Ethiopia** | 2020 | 14.9% |
+:::
+
+:::
+
+"""
+display(Markdown(data_block5))
 ```
 
 :::
